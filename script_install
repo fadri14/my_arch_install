@@ -1,0 +1,332 @@
+# Commentaire multi-lignes
+<<com
+
+# Définir le clavier
+loadkeys fr-bepo
+
+# Définir la font du terminal
+setfont ter-132b
+
+# Définir un mot de passe à root
+passwd
+
+(
+# Se connecter en ssh
+ssh root@localhost -p 2222
+)
+
+# Créer une partition boot et une autre qui sera le système principale
+(choisir gpt)
+cfdisk
+
+com
+
+echo -en "\033[34m\t----- Partie serveur -----\033[0m\n\n"
+
+echo -e "\033[34m--- Mettre à jour l'horloge ---\033[0m"
+timedatectl
+
+echo -e "\033[34m--- Crypter la partition principale ---\033[0m"
+cryptsetup luksFormat \
+  --type luks2 \
+  --hash sha256 \
+  --align-payload 8192 \
+  --iter-time 5000 \
+  --cipher aes-xts-plain64 \
+  --key-size 512 \
+  --pbkdf argon2id \
+  --verify-passphrase /dev/[partition]
+
+echo -e "\033[34m--- Ouvrir la partition crypter ---\033[0m"
+cryptsetup open /dev/[partition] system
+
+echo -e "\033[34m--- Créer les fichiers systèmes ---\033[0m"
+mkfs.fat -F 32 /dev/[partition boot]
+mkfs.btrfs /dev/mapper/system
+
+echo -e "\033[34m--- Monter la partition ---\033[0m"
+mount -t btrfs /dev/mapper/root /mnt
+
+echo -e "\033[34m--- Créer les sous-volumes ---\033[0m"
+btrfs subvolume create /mnt/root
+btrfs subvolume create /mnt/home
+btrfs subvolume create /mnt/snapshots
+
+echo -e "\033[34m--- Démonter la partition ---\033[0m"
+umount -R /mnt
+
+echo -e "\033[34m--- Rémonter la partition avec les bonnes options ---\033[0m"
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/mapper/root /mnt
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/mapper/root /mnt/home
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/mapper/root /mnt/.snapshots
+
+echo -e "\033[34m--- Monter la partition boot ---\033[0m"
+mount /dev/[partition de boot] --mkdir /mnt/boot
+
+echo -e "\033[34m--- Installer les paquets de bases ---\033[0m"
+pacstrap -K /mnt base
+
+echo -e "\033[34m--- Générer le fichier fstab ---\033[0m"
+genfstab -U -p /mnt >> /mnt/etc/fstab
+
+echo -e "\033[34m--- Rentrer dans le système ---\033[0m"
+arch-chroot /mnt
+
+echo -e "\033[34m--- Changer les paramètres de pacman ---\033[0m"
+sed -i 's/#Color$/Color/' /etc/pacman.conf
+sed -i 's/#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
+sed -i 's/#ParallelDownloads = .$/ParallelDownloads = 4/' /etc/pacman.conf
+
+echo -e "\033[34m--- Changer le flag de compilation ---\033[0m"
+cat << EOF >> test
+MAKEFLAGS="-j$(nproc)"
+EOF
+
+echo -e "\033[34m--- Installer les paquets de bases ---\033[0m"
+pacman -S linux-zen linux-zen-headers linux-firmware util-linux networkmanager network-manager-applet wireless_tools wpa_supplicant dhcpcd sudo base-devel btrfs-progs snapper polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget curl openssh sudo archlinux-keyring dialog ntp dosfstools ntfs-3g intel-ucode
+
+echo -e "\033[34m--- Définir le fuseau horaire ---\033[0m"
+ln -sf /usr/share/zoneinfo/Europe/Brussels /etc/localtime
+
+echo -e "\033[34m--- Régler l'horloge matérielle ---\033[0m"
+hwclock --systohc
+
+echo -e "\033[34m--- Changer les locales ---\033[0m"
+sed -i 's/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
+
+echo -e "\033[34m--- Générer les locales ---\033[0m"
+locale-gen
+
+echo -e "\033[34m--- Configurer les locales ---\033[0m"
+cat << EOF > /etc/locale.conf
+LANG=fr_FR.UTF-8
+LC_MESSAGES=fr_FR.UTF-8
+EOF
+
+echo -e "\033[34m--- Configurer la console ---\033[0m"
+cat << EOF > /etc/vconsole.conf
+KEYMAP=fr-bepo
+FONT=ter-132b
+EOF
+
+echo -e "\033[34m--- Éditer le nom d'hôte ---\033[0m"
+cat << EOF > /etc/hostname
+archlinux_sway
+EOF
+
+echo -e "\033[34m--- Configuration du mkinitcpio ---\033[0m"
+cat << EOF > /etc/mkinitcpio.conf
+BINARIES=(btrfsck)
+HOOKS=(base udev autodetect microcode keyboard keymap modconf block encrypt filesystems fsck)
+EOF
+#HOOKS=(base udev autodetect microcode modconf block keyboard keymap encrypt filesystems btrfs)
+#MODULES=(btrfs)
+
+echo -e "\033[34m--- Recharger la configuration du mkinitcpio ---\033[0m"
+mkinitcpio -p linux
+
+echo -e "\033[34m--- Installation de systemd-boot ---\033[0m"
+bootctl --esp-path=/boot install
+
+echo -e "\033[34m--- Configuration de systemd-boot ---\033[0m"
+cat << EOF > /boot/loader/loader.conf
+default arch.conf
+editor no
+timeout 0
+console-mode max
+EOF
+
+echo -e "\033[34m--- Configuration de l'entrée d'arch ---\033[0m"
+MYUUID=$(ls -l /dev/disk/by-uuid/ | grep nvme0n1p6 | cut -d ' ' -f10)
+cat << EOF > /boot/loader/entries/arch.conf
+title My Arch Linux !
+linux /vmlinuz-linux-zen
+initrd intel-ucode.img
+initrd /initramfs-linux-zen.img
+options cryptdevice=UUID=$MYUUID:cryptsystem:allow-discards root=/dev/mapper/cryptsystem rootflags=subvol=root cpufreq.default_gouvernor=performance rw
+EOF
+
+echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
+useradd -g users -G adrien,users,wheel,storage,power,network,audio,video,input -c "I use Arch btw" -m adrien
+passwd adrien
+sed -i 's/echo -e "\033[34m--- %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' /etc/sudoers
+
+echo -e "\033[34m--- Activation de scrub ---\033[0m"
+# C'est la checksum du système btrfs
+systemctl enable --now btrfs-scrub@-.timer
+
+echo -e "\033[34m--- Configuration de snapper ---\033[0m"
+umount /.snapshots/
+rm -rf /.snapshots/
+snapper -c root create-config /
+#systemctl enable --now snapper-timeline.timer
+#systemctl enable --now snapper-cleanup.timer
+
+echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
+reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+
+echo -e "\033[34m--- Installation d'autres paquets ---\033[0m"
+pacman -Syu
+
+chmod +x install_package
+./install_package
+
+echo -e "\033[34m--- Configuration de sddm pour l'autologin ---\033[0m"
+mkdir /etc/sddm.conf.d
+cat << EOF > /etc/sddm.conf.d/autologin.conf
+[Autologin]
+User=adrien
+Session=sway
+EOF
+
+echo -e "\033[34m--- Configuration et activation du pare-feu ---\033[0m"
+ufw default deny
+ufw default allow outgoing
+ufw allow https
+ufw allow ssh
+ufw limit ssh
+ufw enable
+
+echo -e "\033[34m--- Démarrage des services ---\033[0m"
+systemctl enable syslog-ng@default
+systemctl enable systemd-timesyncd
+systemctl enable networkmanager
+systemctl enable ntpd
+systemctl enable sddm
+systemctl enable bluetooth.service
+systemctl enable paccache.timer
+systemctl enable reflector.service
+systemctl enable avahi-daemon cups.socket
+systemctl enable ufw.service
+systemctl enable systemd-boot-update.service
+systemctl enable pipewire-pulse.service
+
+echo -e "\033[34m--- Configuration du bouton power ---\033[0m"
+sed -i "s/#HandlePowerKey=poweroff/HandlePowerKey=ignore/" /etc/systemd/logind.conf
+sed -i "s/#HandlePowerKeyLongPress=ignore/HandlePowerKeyLongPress=poweroff/" /etc/systemd/logind.conf
+
+echo -en "\033[34m\t----- Partie utilisateur -----\033[0m\n\n"
+su - adrien << EOF
+
+echo -e "\033[34m--- Création des dossiers par défauts ---\033[0m"
+xdg-user-dirs-update
+
+echo -e "\033[34m--- Installation de yay ---\033[0m"
+cd Téléchargements
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+cd ..
+rm -fr yay
+cd ~
+
+echo -e "\033[34m--- Installation de fusuma ---\033[0m"
+gem install fusuma
+sudo mv ~/.local/share/gem/ruby/3.0.0/bin/fusuma /usr/local/bin
+
+echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
+yay --noconfirm -S swayfx
+yay --noconfirm -S workstyle-git
+yay --noconfirm -S flashfocus
+yay --noconfirm -S wlsunset
+yay --noconfirm -S grimshot
+yay --noconfirm -S light
+yay --noconfirm -S downgrade
+yay --noconfirm -S arch-update
+yay --noconfirm -S snapper-rollback
+yay --noconfirm -S signal-desktop
+yay --noconfirm -S librewolf-bin
+yay --noconfirm -S freetube
+yay --noconfirm -S netflix
+yay --noconfirm -S melonds
+
+echo -e "\033[34m--- Installation de ma configuration ---\033[0m"
+cd ~
+wget https://github.com/fadri14/dotfiles/archive/refs/heads/main.zip
+unzip main.zip
+mv -f main/myconfig/* ~/.config
+rm -fr main.zip main
+
+echo -e "\033[34m--- Installation de la zram ---\033[0m"
+cd ~/.config/myscripts
+sudo ./install_zram_state
+cd ~
+
+echo -e "\033[34m--- Installation de oh-my-zsh ---\033[0m"
+sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+mv .oh-my-zsh .config/oh-my-zsh
+
+echo -e "\033[34m--- Déplacement de la config de zsh ---\033[0m"
+echo "source ~/.config/myzshrc" > ~/.zshrc
+echo "
+export NUMBERTHEME=7
+source $HOME/.config/mythemes/Dhiver_spatial
+" > ~/.zshenv
+
+echo -e "\033[34m--- Installation des plugins pour zsh ---\033[0m"
+ZSH_CUSTOM="$HOME/.config/oh-my-zsh/custom"
+git clone https://github.com/b4b4r07/enhancd.git $ZSH_CUSTOM/plugins/enhancd
+git clone https://github.com/jeffreytse/zsh-vi-mode $ZSH_CUSTOM/plugins/zsh-vi-mode
+git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+
+echo -e "\033[34m--- Changement du shell de l'utilisateur ---\033[0m"
+chsh -s /bin/zsh adrien
+
+echo -e "\033[34m--- Configuration de git ---\033[0m"
+cat << eof > ~/.gitconfig
+[user]
+	email = fadri1@proton.me
+	name = fadri14
+[core]
+	editor = nvim
+[merge]
+	tool = nvim
+	conflictstyle = diff3
+[mergetool]
+	prompt = false
+[push]
+	autoSetupRemote = true
+[init]
+	defaultBranch = main
+eof
+
+#todo les clés ne sont pas là
+echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
+echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
+cd ~
+
+EOF
+
+echo -en "\033[34m\t----- Fin de l'installlation -----\033[0m\n\n"
+
+echo -e "\033[34m--- Sortir du système ---\033[0m"
+exit
+
+echo -e "\033[34m--- Démonter le système ---\033[0m"
+umount -R /mnt
+
+echo -e "\033[34m--- Fermer la partition chiffré ---\033[0m"
+cryptsetup close system
+
+# echo -e "\033[34m--- Convertir la clé ---\033[0m"
+# cryptsetup luksConvertKey --hash sha256 --pbkdf pbkdf2 /dev/[partition]
+
+echo -e "\033[34m--- Redémarrer ---\033[0m"
+reboot
+
+<<com
+
+# Après installation et importation des backups
+cd ~/Documents
+gpg --import .public.key
+gpg --import .private.key
+
+# Pour rollback
+cryptsetup open /dev/[partition] system
+mount /dev/mapper/system /mnt
+mv /mnt/root /mnt/broken_root
+#btrfs subvol snapshot /mnt/root/ /mnt/.snapshots/#/snapshot/
+btrfs subvol snapshot /mnt/.snapshots/N/snapshot/ /mnt
+# Ou N est le numéro de la snapshot
+
+com
