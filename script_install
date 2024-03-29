@@ -174,7 +174,7 @@ mountpoint = /root
 EOF
 
 echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
-reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
 
 echo -e "\033[34m--- Installation d'autres paquets ---\033[0m"
 pacman -Syu
@@ -195,6 +195,7 @@ ufw default deny
 ufw default allow outgoing
 ufw allow https
 ufw allow ssh
+ufw allow 631/tcp // Pour autoriser l'imprimante
 ufw limit ssh
 ufw enable
 
@@ -206,7 +207,6 @@ systemctl enable ntpd
 systemctl enable sddm
 systemctl enable bluetooth.service
 systemctl enable paccache.timer
-systemctl enable reflector.service
 systemctl enable avahi-daemon cups.socket
 systemctl enable ufw.service
 systemctl enable systemd-boot-update.service
@@ -309,6 +309,10 @@ cd ~
 EOF
 
 echo -en "\033[34m\t----- Fin de l'installlation -----\033[0m\n\n"
+
+echo -e "\033[34m--- Suppression des paquets inutiles ---\033[0m"
+chmod +x remove_package
+./remove_package
 
 echo -e "\033[34m--- Sortir du système ---\033[0m"
 exit
