@@ -40,6 +40,7 @@ wtype
 starship
 ufw
 libreoffice-still
+git
 
 pacman-contrib
 snap-pac
@@ -56,20 +57,28 @@ libinput
 libreoffice-still
 acpi
 mplayer
+go
+swaybg
 
 wayland
 xorg-xwayland
 irqbalance
 cpupower
 pipewire
+pipewire-alsa
 pipewire-audio
-Pipewire-Pulse
+pipewire-jack
+pipewire-pulse
 x86_energy_perf_policy
 rxvt-unicode
 terminus-font
 whois
 ethtool
-foomatic-{db,db-ppds,db-gutenprint-ppds,db-nonfree,db-nonfree-ppds}
+foomatic-db
+foomatic-db-ppds
+foomatic-db-gutenprint-ppds
+foomatic-db-nonfree
+foomatic-db-nonfree-ppds
 gutenprint
 system-config-printer
 transmission-gtk
@@ -85,16 +94,13 @@ cups-filters
 cups-pdf
 avahi
 bash
+bash-completion
 
 adwaita-cursors
 adwaita-icon-theme
 binutils
 blueman
 cryptsetup
-dbusd
-bus-broker
-dbus-broker-units
-dbus-python
 dconf
 default-cursors
 desktop-file-utils
@@ -107,11 +113,6 @@ qt5-wayland
 hunspell
 libadwaita
 pavucontrol
-pipewire
-pipewire-alsa
-pipewire-audio
-pipewire-jack
-pipewire-pulse
 tar
 vulkan-headers
 vulkan-icd-loader
@@ -120,45 +121,44 @@ xdg-dbus-proxy
 xdg-desktop-portal
 xdg-user-dirs
 noto-fonts-emoji
+fwupd
+rebuild-detector
+unrar
 "
 
-<<com
-
-adobe-source-code-pro-fonts
-ttf-liberation
-otf-font-awesome
-gsfonts
-gstreamer
-gst-plugins-bad
-gst-plugins-base
-gst-plugins-ugly
-gst-plugin-pipewire
-gstreamer-vaapi
-gst-plugins-good
-gst-libav
-gstreamer-vaapi
-a52dec
-faac
-faad2
-flac
-jasper
-lame
-libdca
-libdv
-libmad
-libmpeg2
-libtheora
-libvorbis
-libxv
-wavpack
-x264
-xvidcore
-
-com
+#adobe-source-code-pro-fonts
+#ttf-liberation
+#otf-font-awesome
+#gsfonts
+#gstreamer
+#gst-plugins-bad
+#gst-plugins-base
+#gst-plugins-ugly
+#gst-plugin-pipewire
+#gstreamer-vaapi
+#gst-plugins-good
+#gst-libav
+#gstreamer-vaapi
+#a52dec
+#faac
+#faad2
+#flac
+#jasper
+#lame
+#libdca
+#libdv
+#libmad
+#libmpeg2
+#libtheora
+#libvorbis
+#libxv
+#wavpack
+#x264
+#xvidcore
 
 for package in $packages
 do
-    if [[ packages != ""]]
+    if [[ packages != "" ]]
     then
         pacman -S --needed --noconfirm $package &> /dev/null
 

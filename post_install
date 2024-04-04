@@ -1,0 +1,78 @@
+#!/bin/bash
+
+echo -en "\033[34m\t----- Post installation -----\033[0m\n\n"
+
+if [[ $(whoami) != "root" ]]
+then
+    echo "Il faut être root"
+    exit 1
+fi
+
+echo -e "\033[34m--- Activation de scrub ---\033[0m"
+# C'est la checksum du système btrfs
+systemctl enable --now btrfs-scrub@-.timer
+
+echo -e "\033[34m--- Configuration de snapper ---\033[0m"
+umount /.snapshots/
+rm -rf /.snapshots/
+snapper -c root create-config /
+#systemctl enable --now snapper-timeline.timer
+#systemctl enable --now snapper-cleanup.timer
+
+cat << EOF > /etc/snapper/configs/root
+SUBVOLUME="/"
+FSTYPE="btrfs"
+QGROUP=""
+SPACE_LIMIT="0.5"
+FREE_LIMIT="0.2"
+ALLOW_USERS=""
+ALLOW_GROUPS=""
+SYNC_ACL="no"
+BACKGROUND_COMPARISON="yes"
+NUMBER_CLEANUP="yes"
+NUMBER_MIN_AGE="1800"
+NUMBER_LIMIT="30"
+NUMBER_LIMIT_IMPORTANT="10"
+TIMELINE_CREATE="no"
+TIMELINE_CLEANUP="yes"
+TIMELINE_MIN_AGE="1800"
+TIMELINE_LIMIT_HOURLY="0"
+TIMELINE_LIMIT_DAILY="0"
+TIMELINE_LIMIT_WEEKLY="0"
+TIMELINE_LIMIT_MONTHLY="0"
+TIMELINE_LIMIT_YEARLY="0"
+EMPTY_PRE_POST_CLEANUP="yes"
+EMPTY_PRE_POST_MIN_AGE="1800"
+EOF
+
+echo -e "\033[34m--- Configuration de snapper-rollback ---\033[0m"
+cat << EOF > /etc/snapper-rollback.conf
+[root]
+# Name of your linux root subvolume
+subvol_main = root
+# Name of your snapper snapshot subvolume
+subvol_snapshots = .snapshots
+# Directory to which your btrfs root is mounted.
+mountpoint = /
+EOF
+
+echo -e "\033[34m--- Configuration et activation du pare-feu ---\033[0m"
+ufw default deny
+ufw default allow outgoing
+ufw allow https
+ufw allow ssh
+ufw allow 631/tcp # Pour autoriser l'imprimante
+ufw limit ssh
+ufw enable
+systemctl enable ufw.service
+
+echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
+su - adrien << EOF
+echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
+cd ~
+
+cd ~/Documents
+gpg --import .public.key
+gpg --import .private.key
+
+EOF

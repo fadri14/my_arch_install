@@ -7,13 +7,8 @@ then
 fi
 
 packages="
-foot
-dmenu
-htop
-brightnessctl
-nano
-swaylock
 reflector
+rsync
 "
 
 for package in $packages
