@@ -126,8 +126,6 @@ rebuild-detector
 unrar
 "
 
-#pipewire-jack
-
 #adobe-source-code-pro-fonts
 #ttf-liberation
 #otf-font-awesome

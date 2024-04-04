@@ -66,13 +66,37 @@ ufw limit ssh
 ufw enable
 systemctl enable ufw.service
 
-echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
+echo -e "\033[34m--- Montage du disque backup ---\033[0m"
+mount /dev/sdb1 /mnt || exit 1
+
 su - adrien << EOF
+echo -e "\033[34m--- Installation du backup ---\033[0m"
+cd /mnt
+PATH="/home/adrien/.config/myscripts/:$PATH"
+backup
+
+echo -e "\033[34m--- Remise à niveau des permissions ---\033[0m"
+reset_perm
+sudo chmod -x .ssh/*
+sudo chmod 600 ~/.gnupg/*
+sudo chmod 700 ~/.gnupg/
+
+echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
 echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
 cd ~
 
+echo -e "\033[34m--- Importation des clés gpg ---\033[0m"
 cd ~/Documents
 gpg --import .public.key
 gpg --import .private.key
+cd ~
+gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
+
+echo -e "\033[34m--- Installation des plugins de neovim ---\033[0m"
+nvim .config/nvim/lua/adrien-config/packer.lua
 
 EOF
+
+echo -e "\033[34m--- Démontage du disque backup ---\033[0m"
+umount /mnt
+

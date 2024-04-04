@@ -113,6 +113,9 @@ echo -e "\033[34m--- Configuration du bouton power ---\033[0m"
 sed -i "s/#HandlePowerKey=poweroff/HandlePowerKey=ignore/" /etc/systemd/logind.conf
 sed -i "s/#HandlePowerKeyLongPress=ignore/HandlePowerKeyLongPress=poweroff/" /etc/systemd/logind.conf
 
+echo -e "\033[34m--- Mise à jour de l'envirronement dbus ---\033[0m"
+dbus-update-activation-environment --all
+
 echo -en "\033[34m\t----- Partie utilisateur -----\033[0m\n\n"
 su - adrien << EOF
 cd /home/adrien
