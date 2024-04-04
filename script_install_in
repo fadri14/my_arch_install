@@ -2,7 +2,6 @@
 
 partition_systeme="$1"
 
-
 echo -e "\033[34m--- Changer les paramètres de pacman ---\033[0m"
 sed -i 's/#Color$/Color/' /etc/pacman.conf
 sed -i 's/#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
@@ -87,7 +86,6 @@ usermod -a -g adrien -G users,wheel,storage,power,network,audio,video,input adri
 passwd adrien
 
 echo -e "\033[34m--- Installation d'autres paquets ---\033[0m"
-chmod +x install_package
 ./install_package
 
 echo -e "\033[34m--- Configuration de sddm pour l'autologin ---\033[0m"
