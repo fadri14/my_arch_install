@@ -82,13 +82,13 @@ rm /mnt/install_package
 echo -en "\033[34m\t----- Fin de l'installlation -----\033[0m\n\n"
 
 echo -e "\033[34m--- Démonter le système ---\033[0m"
-#umount -R /mnt
+umount -R /mnt
 
 echo -e "\033[34m--- Fermer la partition chiffrée ---\033[0m"
-#cryptsetup close system
+cryptsetup close system
 
 echo -e "\033[34m--- Éteindre ---\033[0m"
-#poweroff
+poweroff
 
 ## Pour rollback
 #cryptsetup open /dev/[partition] system
