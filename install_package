@@ -67,7 +67,6 @@ cpupower
 pipewire
 pipewire-alsa
 pipewire-audio
-pipewire-jack
 pipewire-pulse
 x86_energy_perf_policy
 rxvt-unicode
@@ -125,6 +124,8 @@ fwupd
 rebuild-detector
 unrar
 "
+
+#pipewire-jack
 
 #adobe-source-code-pro-fonts
 #ttf-liberation
