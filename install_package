@@ -44,7 +44,6 @@ libreoffice-still
 git
 
 pacman-contrib
-snap-pac
 ruby
 python-pip
 python-certifi

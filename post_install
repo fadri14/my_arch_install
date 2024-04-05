@@ -12,6 +12,9 @@ echo -e "\033[34m--- Activation de scrub ---\033[0m"
 # C'est la checksum du système btrfs
 systemctl enable --now btrfs-scrub@-.timer
 
+echo -e "\033[34m--- Installation de snapper ---\033[0m"
+sudo pacman --noconfirm -S snapper snap-pac
+
 echo -e "\033[34m--- Configuration de snapper ---\033[0m"
 umount /.snapshots/
 rm -rf /.snapshots/
@@ -49,11 +52,14 @@ echo -e "\033[34m--- Configuration de snapper-rollback ---\033[0m"
 cat << EOF > /etc/snapper-rollback.conf
 [root]
 # Name of your linux root subvolume
-subvol_main = root
+#subvol_main = root
+subvol_main = @
 # Name of your snapper snapshot subvolume
 subvol_snapshots = .snapshots
+subvol_snapshots = @snapshots
 # Directory to which your btrfs root is mounted.
-mountpoint = /
+#mountpoint = /
+mountpoint = /btrfsroot
 EOF
 
 echo -e "\033[34m--- Configuration et activation du pare-feu ---\033[0m"
