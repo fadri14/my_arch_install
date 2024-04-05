@@ -52,14 +52,11 @@ echo -e "\033[34m--- Configuration de snapper-rollback ---\033[0m"
 cat << EOF > /etc/snapper-rollback.conf
 [root]
 # Name of your linux root subvolume
-#subvol_main = root
-subvol_main = @
+subvol_main = root
 # Name of your snapper snapshot subvolume
 subvol_snapshots = .snapshots
-subvol_snapshots = @snapshots
 # Directory to which your btrfs root is mounted.
-#mountpoint = /
-mountpoint = /btrfsroot
+mountpoint = /
 EOF
 
 echo -e "\033[34m--- Configuration et activation du pare-feu ---\033[0m"
@@ -73,13 +70,14 @@ ufw enable
 systemctl enable ufw.service
 
 echo -e "\033[34m--- Montage du disque backup ---\033[0m"
-mount /dev/sdb1 /mnt || exit 1
+mount /dev/sdb1 /mnt
 
 su - adrien << EOF
 echo -e "\033[34m--- Installation du backup ---\033[0m"
 cd /mnt
 PATH="/home/adrien/.config/myscripts/:$PATH"
 backup
+cd ~
 
 echo -e "\033[34m--- Remise à niveau des permissions ---\033[0m"
 reset_perm
@@ -94,14 +92,16 @@ cd ~
 
 echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
 echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
-cd ~
 
 echo -e "\033[34m--- Importation des clés gpg ---\033[0m"
 cd ~/Documents
-gpg --import .public.key
-gpg --import .private.key
+sudo gpg --import .private.key
+sudo gpg --import .public.key
 cd ~
-gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
+sudo gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
+
+echo -e "\033[34m--- Initiation de pass storage ---\033[0m"
+pass init 9D2FA1339D3E9F67150E689D68B835DCDA861664
 
 echo -e "\033[34m--- Installation des plugins de neovim ---\033[0m"
 nvim .config/nvim/lua/adrien-config/packer.lua
