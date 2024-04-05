@@ -23,7 +23,7 @@ snapper -c root create-config /
 #systemctl enable --now snapper-cleanup.timer
 
 cat << EOF > /etc/snapper/configs/root
-SUBVOLUME="root"
+SUBVOLUME="/"
 FSTYPE="btrfs"
 QGROUP=""
 SPACE_LIMIT="0.5"
@@ -46,17 +46,6 @@ TIMELINE_LIMIT_MONTHLY="0"
 TIMELINE_LIMIT_YEARLY="0"
 EMPTY_PRE_POST_CLEANUP="yes"
 EMPTY_PRE_POST_MIN_AGE="1800"
-EOF
-
-echo -e "\033[34m--- Configuration de snapper-rollback ---\033[0m"
-cat << EOF > /etc/snapper-rollback.conf
-[root]
-# Name of your linux root subvolume
-subvol_main = root
-# Name of your snapper snapshot subvolume
-subvol_snapshots = .snapshots
-# Directory to which your btrfs root is mounted.
-mountpoint = /
 EOF
 
 echo -e "\033[34m--- Configuration et activation du pare-feu ---\033[0m"

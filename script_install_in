@@ -134,10 +134,6 @@ unzip main.zip
 mv -f dotfiles-main/myconfig/* ~/.config
 rm -fr main.zip dotfiles-main
 
-echo -e "\033[34m--- Changement de la config de bash ---\033[0m"
-echo "source ~/.bashenv" >> ~/.bashrc
-echo "source $HOME/.config/mythemes/Dhiver_spatial" > ~/.bashenv
-
 echo -e "\033[34m--- Configuration de git ---\033[0m"
 cat << eof > ~/.gitconfig
 [user]
@@ -174,7 +170,6 @@ yay --noconfirm -S grimshot
 yay --noconfirm -S light
 yay --noconfirm -S downgrade
 yay --noconfirm -S arch-update
-yay --noconfirm -S snapper-rollback
 yay --noconfirm -S librewolf-bin
 yay --noconfirm -S signal-desktop
 yay --noconfirm -S freetube

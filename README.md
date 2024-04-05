@@ -54,10 +54,9 @@ sudo ./post_install
 ```
 # Pour rollback
 ```
-cryptsetup open /dev/[partition] system
+cryptsetup open /dev/sda2 system
 mount /dev/mapper/system /mnt
-mv /mnt /mnt/broken_root
-btrfs subvol snapshot /mnt/root/ /mnt/.snapshots/[N]/snapshot/
-btrfs subvol snapshot /mnt/.snapshots/[N]/snapshot/ /mnt
+mv /mnt/root /mnt/broken_root
+btrfs subvol snapshot /mnt/snapshots/[N]/snapshot/ /mnt/root
 ```
 Où N est le numéro du snapshot
