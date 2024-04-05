@@ -3,7 +3,6 @@
 partition_systeme="$1"
 
 echo -e "\033[34m--- Activation du compte root ---\033[0m"
-paplay /usr/share/sounds/freedesktop/stereo/bell.oga # émettre un son
 passwd
 
 echo -e "\033[34m--- Changer les paramètres de pacman ---\033[0m"
@@ -85,7 +84,6 @@ echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
 reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
 
 echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
-paplay /usr/share/sounds/freedesktop/stereo/bell.oga # émettre un son
 useradd -m -c "I use Arch btw" adrien
 usermod -a -g adrien -G users,wheel,storage,power,network,audio,video,input adrien
 passwd adrien
@@ -125,19 +123,9 @@ cd /home/adrien
 echo -e "\033[34m--- Création des dossiers par défauts ---\033[0m"
 xdg-user-dirs-update
 
-echo -e "\033[34m--- Installation de yay ---\033[0m"
-cd Téléchargements
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si --noconfirm
-cd ..
-rm -fr yay
-cd ~
-
 echo -e "\033[34m--- Installation de fusuma ---\033[0m"
 gem install fusuma
 sudo mv ~/.local/share/gem/ruby/3.0.0/bin/fusuma /usr/local/bin
-paplay /usr/share/sounds/freedesktop/stereo/bell.oga # émettre un son
 
 echo -e "\033[34m--- Installation de ma configuration ---\033[0m"
 cd ~
@@ -145,11 +133,6 @@ wget https://github.com/fadri14/dotfiles/archive/refs/heads/main.zip
 unzip main.zip
 mv -f dotfiles-main/myconfig/* ~/.config
 rm -fr main.zip dotfiles-main
-
-echo -e "\033[34m--- Installation de la zram ---\033[0m"
-cd ~/.config/myscripts
-sudo ./install_zram_state
-cd ~
 
 echo -e "\033[34m--- Changement de la config de bash ---\033[0m"
 echo "source ~/.bashenv" >> ~/.bashrc
@@ -172,6 +155,15 @@ cat << eof > ~/.gitconfig
 [init]
 	defaultBranch = main
 eof
+
+echo -e "\033[34m--- Installation de yay ---\033[0m"
+cd Téléchargements
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si --noconfirm
+cd ..
+rm -fr yay
+cd ~
 
 echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
 yay --noconfirm -S swayfx

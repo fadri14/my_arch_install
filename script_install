@@ -1,36 +1,11 @@
 #!/bin/bash
 
-### Mon script d'installation d'arch linux
-# Définir le clavier
-#loadkeys fr-bepo
-
-# Définir la font du terminal
-#setfont ter-132b
-
-# Définir un mot de passe à root
-#passwd
-
-# Se connecter en ssh
-#ssh root@ip
-
-# Créer une partition boot et une autre qui sera le système principale
-# Une partition de 1G de type EFI System
-# Une partition de type Linux filesystem
-#(choisir le label gpt)
-#cfdisk
-#
-#mkdir mymount
-#mount /dev/sdb4 mymount # l'espace de stockage de ventoy
-#cd mymount/my_arch_install
-#./script_install sda1 sda2 # la partition boot puis la partition système
-
 partition_boot="$1"
 partition_systeme="$2"
 
 echo -en "\033[34m\t----- Partie serveur -----\033[0m\n\n"
 
-echo -e "\033[34m--- Crypter la partition principale ---\033[0m"
-paplay /usr/share/sounds/freedesktop/stereo/bell.oga # émettre un son
+echo -e "\033[34m--- Chiffrement da la partition principale ---\033[0m"
 cryptsetup luksFormat \
   --type luks2 \
   --hash sha256 \
@@ -41,8 +16,7 @@ cryptsetup luksFormat \
   --pbkdf argon2id \
   --verify-passphrase /dev/$partition_systeme
 
-echo -e "\033[34m--- Ouvrir la partition cryptée ---\033[0m"
-paplay /usr/share/sounds/freedesktop/stereo/bell.oga # émettre un son
+echo -e "\033[34m--- Ouvrir la partition chiffrée ---\033[0m"
 cryptsetup open /dev/$partition_systeme system
 
 echo -e "\033[34m--- Créer les fichiers systèmes ---\033[0m"
@@ -53,23 +27,17 @@ echo -e "\033[34m--- Monter la partition ---\033[0m"
 mount -t btrfs /dev/mapper/system /mnt
 
 echo -e "\033[34m--- Créer les sous-volumes ---\033[0m"
-#btrfs subvolume create /mnt/root
-#btrfs subvolume create /mnt/home
-#btrfs subvolume create /mnt/snapshots
-btrfs subvolume create /mnt/@
-btrfs subvolume create /mnt/@home
-btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/root
+btrfs subvolume create /mnt/home
+btrfs subvolume create /mnt/snapshots
 
 echo -e "\033[34m--- Démonter la partition ---\033[0m"
 umount -R /mnt
 
 echo -e "\033[34m--- Rémonter la partition avec les bonnes options ---\033[0m"
-#mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/mapper/system /mnt
-#mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/mapper/system /mnt/home
-#mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/mapper/system /mnt/.snapshots
-mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@ /dev/mapper/system /mnt
-mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@home /dev/mapper/system /mnt/home
-mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@snapshots /dev/mapper/system /mnt/.snapshots
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/mapper/system /mnt
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/mapper/system /mnt/home
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/mapper/system /mnt/.snapshots
 
 echo -e "\033[34m--- Monter la partition boot ---\033[0m"
 mount /dev/$partition_boot --mkdir /mnt/boot
@@ -98,10 +66,3 @@ cryptsetup close system
 echo -e "\033[34m--- Éteindre ---\033[0m"
 poweroff
 
-## Pour rollback
-#cryptsetup open /dev/[partition] system
-#mount /dev/mapper/system /mnt
-#mv /mnt/root /mnt/broken_root
-#btrfs subvol snapshot /mnt/root/ /mnt/.snapshots/#/snapshot/
-#btrfs subvol snapshot /mnt/.snapshots/N/snapshot/ /mnt
-# Ou N est le numéro de la snapshot

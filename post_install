@@ -23,7 +23,7 @@ snapper -c root create-config /
 #systemctl enable --now snapper-cleanup.timer
 
 cat << EOF > /etc/snapper/configs/root
-SUBVOLUME="/"
+SUBVOLUME="root"
 FSTYPE="btrfs"
 QGROUP=""
 SPACE_LIMIT="0.5"
@@ -87,6 +87,11 @@ sudo chmod -x .ssh/*
 sudo chmod 600 ~/.gnupg/*
 sudo chmod 700 ~/.gnupg/
 
+echo -e "\033[34m--- Installation de la zram ---\033[0m"
+cd ~/.config/myscripts
+sudo ./install_zram_state
+cd ~
+
 echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
 echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
 cd ~
@@ -106,3 +111,4 @@ EOF
 echo -e "\033[34m--- Démontage du disque backup ---\033[0m"
 umount /mnt
 
+echo -e "\033[34m--- Fin de la post-installation ---\033[0m"
