@@ -83,7 +83,6 @@ echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
 echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
 reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
-pacman -Rs --noconfirm reflector
 
 echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
 paplay /usr/share/sounds/freedesktop/stereo/bell.oga # émettre un son
