@@ -116,8 +116,9 @@ tar
 vulkan-headers
 vulkan-icd-loader
 vulkan-intel
+xdg-desktop-portal-wlr
+xdg-desktop-portal-gtk
 xdg-dbus-proxy
-xdg-desktop-portal
 xdg-user-dirs
 noto-fonts-emoji
 fwupd
