@@ -56,7 +56,8 @@ sudo ./post_install
 ```
 cryptsetup open /dev/sda2 system
 mount /dev/mapper/system /mnt
-mv /mnt/root /mnt/broken_root
-btrfs subvol snapshot /mnt/snapshots/[N]/snapshot/ /mnt/root
+mv /mnt/root /mnt/broken_root # optionnel
+btrfs subvol snapshot /mnt/snapshots/[N]/snapshot/ /mnt/root # pour la racine
+btrfs subvol snapshot /mnt/home/.snapshots/[N]/snapshot/ /mnt/home # pour le home
 ```
 Où N est le numéro du snapshot
