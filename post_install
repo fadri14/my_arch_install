@@ -109,11 +109,9 @@ echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
 echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
 
 echo -e "\033[34m--- Importation des clés gpg ---\033[0m"
-cd ~/Documents
-sudo gpg --import .private.key
-sudo gpg --import .public.key
-cd ~
-sudo gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
+gpg --import .key_public.gpg
+#gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
+gpg --edit-key fadri1@proton.me sign quit
 
 echo -e "\033[34m--- Initiation de pass storage ---\033[0m"
 pass init 9D2FA1339D3E9F67150E689D68B835DCDA861664
