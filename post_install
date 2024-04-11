@@ -96,9 +96,9 @@ cd ~
 
 echo -e "\033[34m--- Remise à niveau des permissions ---\033[0m"
 reset_perm
-sudo chmod -x .ssh/*
-sudo chmod 600 ~/.gnupg/*
-sudo chmod 700 ~/.gnupg/
+chmod -x .ssh/*
+#chmod 600 ~/.gnupg/*
+#chmod 700 ~/.gnupg/
 
 echo -e "\033[34m--- Installation de la zram ---\033[0m"
 cd ~/.config/myscripts
@@ -106,11 +106,11 @@ sudo ./install_zram_state
 cd ~
 
 echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
-echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
+#echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
 
 echo -e "\033[34m--- Importation des clés gpg ---\033[0m"
-gpg --import ~/Documents/.key_public.gpg
-gpg --import-ownertrust ~/Documents/.trust
+#gpg --import ~/Documents/.key_public.gpg
+#gpg --import-ownertrust ~/Documents/.trust
 #gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
 #gpg --edit-key fadri1@proton.me sign quit
 
