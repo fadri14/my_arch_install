@@ -3,6 +3,11 @@
 partition_boot="$1"
 partition_systeme="$2"
 
+type_ucode = "intel-ucode"
+if [[ "$3" = "amd" ]]
+    type_ucode = "amd-ucode"
+fi
+
 echo -en "\033[34m\t----- Partie serveur -----\033[0m\n\n"
 
 echo -e "\033[34m--- Chiffrement da la partition principale ---\033[0m"
@@ -51,7 +56,7 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 echo -e "\033[34m--- Rentrer dans le système ---\033[0m"
 cp script_install_in /mnt
 cp install_package /mnt
-arch-chroot /mnt ./script_install_in $partition_systeme
+arch-chroot /mnt ./script_install_in $partition_systeme $type_ucode
 rm /mnt/script_install_in
 rm /mnt/install_package
 

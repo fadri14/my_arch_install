@@ -1,6 +1,7 @@
 #!/bin/bash
 
 partition_systeme="$1"
+type_ucode="$2"
 
 echo -e "\033[34m--- Activation du compte root ---\033[0m"
 passwd
@@ -16,7 +17,7 @@ MAKEFLAGS="-j$(nproc)"
 EOF
 
 echo -e "\033[34m--- Installer les paquets de bases ---\033[0m"
-pacman --noconfirm -S linux-zen linux-zen-headers linux-firmware util-linux networkmanager network-manager-applet wireless_tools wpa_supplicant dhcpcd base-devel btrfs-progs polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget curl rsync openssh sudo dialog ntp dosfstools ntfs-3g intel-ucode
+pacman --noconfirm -S linux-zen linux-zen-headers linux-firmware util-linux networkmanager network-manager-applet wireless_tools wpa_supplicant dhcpcd base-devel btrfs-progs polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget curl rsync openssh sudo dialog ntp dosfstools ntfs-3g $type_ucode
 
 echo -e "\033[34m--- Définir le fuseau horaire ---\033[0m"
 ln -sf /usr/share/zoneinfo/Europe/Brussels /etc/localtime
