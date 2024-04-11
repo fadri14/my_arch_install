@@ -32,7 +32,6 @@ pass
 keychain
 texlive
 grim
-zsh
 fish
 zenity
 discord
@@ -42,6 +41,7 @@ starship
 ufw
 libreoffice-still
 git
+gammastep
 
 pacman-contrib
 ruby

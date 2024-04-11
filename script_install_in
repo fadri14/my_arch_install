@@ -163,10 +163,8 @@ echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
 yay --noconfirm -S swayfx
 yay --noconfirm -S workstyle-git
 yay --noconfirm -S flashfocus
-yay --noconfirm -S wlsunset
 yay --noconfirm -S grimshot
 yay --noconfirm -S light
-yay --noconfirm -S downgrade
 yay --noconfirm -S arch-update
 yay --noconfirm -S librewolf-bin
 yay --noconfirm -S signal-desktop
