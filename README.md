@@ -41,10 +41,8 @@ cd mymount/my_arch_install
 cfdisk
 ```
 ## Lancement du script
-- Paramètre 1 : la partition boot
-- Paramètre 2 : la partition système
 ```
-./script_install sda1 sda2
+./script_install [partition boot] [partition root]
 ```
 
 # Post-installation

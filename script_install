@@ -3,9 +3,10 @@
 partition_boot="$1"
 partition_systeme="$2"
 
-type_ucode = "intel-ucode"
+type_ucode="intel-ucode"
 if [[ "$3" = "amd" ]]
-    type_ucode = "amd-ucode"
+then
+    type_ucode="amd-ucode"
 fi
 
 echo -en "\033[34m\t----- Partie serveur -----\033[0m\n\n"
