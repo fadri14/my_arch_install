@@ -40,6 +40,14 @@ cd mymount/my_arch_install
 ```
 cfdisk
 ```
+
+## Fin d'installation
+```
+cd
+umount mymount
+poweroff
+```
+
 ## Lancement du script
 ```
 ./script_install [partition boot] [partition root]
@@ -52,10 +60,14 @@ sudo ./post_install
 ```
 # Pour rollback
 ```
-cryptsetup open /dev/sda2 system
+cryptsetup open /dev/[partition root] system
 mount /dev/mapper/system /mnt
-mv /mnt/root /mnt/broken_root # optionnel
-btrfs subvol snapshot /mnt/snapshots/[N]/snapshot/ /mnt/root # pour la racine
-btrfs subvol snapshot /mnt/home/.snapshots/[N]/snapshot/ /mnt/home # pour le home
+
+mv /mnt/root /mnt/broken_root
+btrfs subvol snapshot /mnt/snapshots/[N]/snapshot/ /mnt/root
+
+umount /mnt
+cryptsetup close system
+poweroff
 ```
 Où N est le numéro du snapshot

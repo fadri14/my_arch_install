@@ -61,14 +61,11 @@ arch-chroot /mnt ./script_install_in $partition_systeme $type_ucode
 rm /mnt/script_install_in
 rm /mnt/install_package
 
-echo -en "\033[34m\t----- Fin de l'installlation -----\033[0m\n\n"
+echo -en "\n\033[34m\t----- Fin de l'installlation -----\033[0m\n\n"
 
 echo -e "\033[34m--- Démonter le système ---\033[0m"
 umount -R /mnt
 
 echo -e "\033[34m--- Fermer la partition chiffrée ---\033[0m"
 cryptsetup close system
-
-echo -e "\033[34m--- Éteindre ---\033[0m"
-poweroff
 

@@ -12,6 +12,16 @@ echo -e "\033[34m--- Activation de scrub ---\033[0m"
 # C'est la checksum du système btrfs
 systemctl enable --now btrfs-scrub@-.timer
 
+echo -e "\033[34m--- Configuration et activation du pare-feu ---\033[0m"
+ufw default deny
+ufw default allow outgoing
+ufw allow https
+ufw allow ssh
+ufw allow 631/tcp # Pour autoriser l'imprimante
+ufw limit ssh
+ufw enable
+systemctl enable ufw.service
+
 echo -e "\033[34m--- Installation de snapper ---\033[0m"
 sudo pacman --noconfirm -S snapper snap-pac
 
@@ -48,41 +58,9 @@ EMPTY_PRE_POST_CLEANUP="yes"
 EMPTY_PRE_POST_MIN_AGE="1800"
 EOF
 
-cat << EOF > /etc/snapper/configs/home
-SUBVOLUME="/home"
-FSTYPE="btrfs"
-QGROUP=""
-SPACE_LIMIT="0.5"
-FREE_LIMIT="0.2"
-ALLOW_USERS=""
-ALLOW_GROUPS=""
-SYNC_ACL="no"
-BACKGROUND_COMPARISON="yes"
-NUMBER_CLEANUP="yes"
-NUMBER_MIN_AGE="1800"
-NUMBER_LIMIT="30"
-NUMBER_LIMIT_IMPORTANT="10"
-TIMELINE_CREATE="yes"
-TIMELINE_CLEANUP="yes"
-TIMELINE_MIN_AGE="1800"
-TIMELINE_LIMIT_HOURLY="5"
-TIMELINE_LIMIT_DAILY="5"
-TIMELINE_LIMIT_WEEKLY="5"
-TIMELINE_LIMIT_MONTHLY="0"
-TIMELINE_LIMIT_YEARLY="0"
-EMPTY_PRE_POST_CLEANUP="yes"
-EMPTY_PRE_POST_MIN_AGE="1800"
-EOF
-
-echo -e "\033[34m--- Configuration et activation du pare-feu ---\033[0m"
-ufw default deny
-ufw default allow outgoing
-ufw allow https
-ufw allow ssh
-ufw allow 631/tcp # Pour autoriser l'imprimante
-ufw limit ssh
-ufw enable
-systemctl enable ufw.service
+echo -e "\033[34m--- Création des premiers instantanés ---\033[0m"
+snapper -c root create --type single --cleanup-algorithm number --description 'backup_root'
+snapper -c home create --type single --cleanup-algorithm number --description 'backup_home'
 
 echo -e "\033[34m--- Montage du disque backup ---\033[0m"
 mount /dev/sdb1 /mnt
@@ -113,6 +91,10 @@ echo -e "\033[34m--- Importation des clés gpg ---\033[0m"
 #gpg --import-ownertrust ~/Documents/.trust
 #gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
 #gpg --edit-key fadri1@proton.me sign quit
+
+
+rm .gnupg/public-keys.d/pubring.db.lock
+gpgconf --reload gpg-agent
 
 echo -e "\033[34m--- Initiation de pass storage ---\033[0m"
 pass init 9D2FA1339D3E9F67150E689D68B835DCDA861664
