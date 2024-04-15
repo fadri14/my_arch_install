@@ -92,12 +92,8 @@ echo -e "\033[34m--- Importation des clés gpg ---\033[0m"
 #gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
 #gpg --edit-key fadri1@proton.me sign quit
 
-
-rm .gnupg/public-keys.d/pubring.db.lock
-gpgconf --reload gpg-agent
-
 echo -e "\033[34m--- Initiation de pass storage ---\033[0m"
-pass init 9D2FA1339D3E9F67150E689D68B835DCDA861664
+#pass init 9D2FA1339D3E9F67150E689D68B835DCDA861664
 
 echo -e "\033[34m--- Installation des plugins de neovim ---\033[0m"
 nvim .config/nvim/lua/adrien-config/packer.lua
