@@ -126,36 +126,6 @@ rebuild-detector
 unrar
 "
 
-#adobe-source-code-pro-fonts
-#ttf-liberation
-#otf-font-awesome
-#gsfonts
-#gstreamer
-#gst-plugins-bad
-#gst-plugins-base
-#gst-plugins-ugly
-#gst-plugin-pipewire
-#gstreamer-vaapi
-#gst-plugins-good
-#gst-libav
-#gstreamer-vaapi
-#a52dec
-#faac
-#faad2
-#flac
-#jasper
-#lame
-#libdca
-#libdv
-#libmad
-#libmpeg2
-#libtheora
-#libvorbis
-#libxv
-#wavpack
-#x264
-#xvidcore
-
 for package in $packages
 do
     if [[ packages != "" ]]
