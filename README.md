@@ -66,6 +66,9 @@ mount /dev/mapper/system /mnt
 mv /mnt/root /mnt/broken_root
 btrfs subvol snapshot /mnt/snapshots/[N]/snapshot/ /mnt/root
 
+mv /mnt/home/adrien /mnt/home/broken_adrien
+btrfs subvol snapshot /mnt/home/.snapshots/[N]/snapshot/ /mnt/home
+
 umount /mnt
 cryptsetup close system
 poweroff
