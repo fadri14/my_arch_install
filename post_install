@@ -1,12 +1,12 @@
 #!/bin/bash
 
-echo -en "\033[34m\t----- Post installation -----\033[0m\n\n"
-
 if [[ $(whoami) != "root" ]]
 then
     echo "Il faut être root"
     exit 1
 fi
+
+echo -en "\033[34m\t----- Post installation -----\033[0m\n\n"
 
 echo -e "\033[34m--- Activation de scrub ---\033[0m"
 # C'est la checksum du système btrfs
