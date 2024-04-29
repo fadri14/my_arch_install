@@ -42,6 +42,7 @@ ufw
 libreoffice-still
 git
 gammastep
+yt-dlp
 
 pacman-contrib
 ruby
