@@ -43,6 +43,7 @@ libreoffice-still
 git
 gammastep
 yt-dlp
+id3v2
 
 pacman-contrib
 ruby
