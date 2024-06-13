@@ -30,6 +30,7 @@ umount /.snapshots/
 rm -rf /.snapshots/
 snapper -c root create-config /
 snapper -c home create-config /home
+chmod a+rx /home/.snapshots
 chown :adrien /home/.snapshots
 systemctl enable --now snapper-timeline.timer
 systemctl enable --now snapper-cleanup.timer
