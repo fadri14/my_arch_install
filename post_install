@@ -23,7 +23,7 @@ ufw enable
 systemctl enable ufw.service
 
 echo -e "\033[34m--- Installation de snapper ---\033[0m"
-sudo pacman --noconfirm -S snapper snap-pac
+pacman --noconfirm -S snapper snap-pac
 
 echo -e "\033[34m--- Configuration de snapper ---\033[0m"
 umount /.snapshots/
@@ -91,45 +91,51 @@ echo -e "\033[34m--- Création des premiers instantanés ---\033[0m"
 snapper -c root create --type single --cleanup-algorithm number --description 'backup_root'
 snapper -c home create --type single --cleanup-algorithm number --description 'backup_home'
 
-echo -e "\033[34m--- Montage du disque backup ---\033[0m"
-mount /dev/sdb1 /mnt
+read -p "Voulez-vous faire une installation d'un backup [y|n] " res
 
-su - adrien << EOF
-echo -e "\033[34m--- Installation du backup ---\033[0m"
-cd /mnt
-PATH="/home/adrien/.config/myscripts/:$PATH"
-backup
-cd ~
+if [[ "$res" = "y" ]]
+then
+    echo -e "\033[34m--- Montage du disque backup ---\033[0m"
+    mount /dev/sdb1 /mnt
 
-echo -e "\033[34m--- Remise à niveau des permissions ---\033[0m"
-reset_perm
-chmod -x .ssh/*
-#chmod 600 ~/.gnupg/*
-#chmod 700 ~/.gnupg/
+    su - adrien << EOF
+    echo -e "\033[34m--- Installation du backup ---\033[0m"
+    cd /mnt
+    PATH="/home/adrien/.config/myscripts/:$PATH"
+    backup
+    cd ~
 
-echo -e "\033[34m--- Installation de la zram ---\033[0m"
-cd ~/.config/myscripts
-sudo ./install_zram_state
-cd ~
+    echo -e "\033[34m--- Remise à niveau des permissions ---\033[0m"
+    reset_perm
+    chmod -x .ssh/*
+    #chmod 600 ~/.gnupg/*
+    #chmod 700 ~/.gnupg/
 
-echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
-#echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
+    echo -e "\033[34m--- Installation de la zram ---\033[0m"
+    cd ~/.config/myscripts
+    sudo ./install_zram_state
+    cd ~
 
-echo -e "\033[34m--- Importation des clés gpg ---\033[0m"
-#gpg --import ~/Documents/.key_public.gpg
-#gpg --import-ownertrust ~/Documents/.trust
-#gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
-#gpg --edit-key fadri1@proton.me sign quit
+    echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
+    #echo "default-cache-ttl 3600" > ~/.gnupg/gpg-agent.conf
 
-echo -e "\033[34m--- Initiation de pass storage ---\033[0m"
-#pass init 9D2FA1339D3E9F67150E689D68B835DCDA861664
+    echo -e "\033[34m--- Importation des clés gpg ---\033[0m"
+    #gpg --import ~/Documents/.key_public.gpg
+    #gpg --import-ownertrust ~/Documents/.trust
+    #gpg --edit-key 9D2FA1339D3E9F67150E689D68B835DCDA861664 trust quit
+    #gpg --edit-key fadri1@proton.me sign quit
 
-echo -e "\033[34m--- Installation des plugins de neovim ---\033[0m"
-#nvim .config/nvim/lua/adrien-config/packer.lua
+    echo -e "\033[34m--- Initiation de pass storage ---\033[0m"
+    #pass init 9D2FA1339D3E9F67150E689D68B835DCDA861664
 
-EOF
+    echo -e "\033[34m--- Installation des plugins de neovim ---\033[0m"
+    #nvim .config/nvim/lua/adrien-config/packer.lua
 
-echo -e "\033[34m--- Démontage du disque backup ---\033[0m"
-umount /mnt
+    EOF
+
+    echo -e "\033[34m--- Démontage du disque backup ---\033[0m"
+    umount /mnt
+fi
 
 echo -e "\033[34m--- Fin de la post-installation ---\033[0m"
+
