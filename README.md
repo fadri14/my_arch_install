@@ -66,11 +66,11 @@ cryptsetup open /dev/sda2 system
 mount /dev/mapper/system /mnt
 
 number=N # Le numéro du snapshot
-mv /mnt/root /mnt/broken_root
+mv -f /mnt/root /mnt/broken_root
 btrfs subvol snapshot /mnt/snapshots/$number/snapshot/ /mnt/root
 
 number=N # Le numéro du snapshot
-mv /mnt/home/adrien /mnt/home/broken_adrien
+mv -f /mnt/home/adrien /mnt/home/broken_adrien
 btrfs subvol snapshot /mnt/home/.snapshots/$number/snapshot /mnt/home
 mv /mnt/home/snapshot/adrien /mnt/home/adrien
 rm -fr /mnt/home/snapshot
