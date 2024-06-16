@@ -51,6 +51,7 @@ poweroff
 ## Lancement du script
 ```
 ./script_install [partition boot] [partition root]
+./script_install sda1 sda2
 ```
 
 # Post-installation
