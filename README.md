@@ -61,7 +61,8 @@ sudo ./post_install
 ```
 # Pour rollback
 ```
-cryptsetup open /dev/[partition root] system
+#cryptsetup open /dev/[partition root] system
+cryptsetup open /dev/sda2 system
 mount /dev/mapper/system /mnt
 
 number=N # Le numéro du snapshot

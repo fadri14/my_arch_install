@@ -98,7 +98,7 @@ then
     echo -e "\033[34m--- Montage du disque backup ---\033[0m"
     mount /dev/sdb1 /mnt
 
-    su - adrien << EOF
+    user_commands=$(cat << 'END'
     echo -e "\033[34m--- Installation du backup ---\033[0m"
     cd /mnt
     PATH="/home/adrien/.config/myscripts/:$PATH"
@@ -130,8 +130,9 @@ then
 
     echo -e "\033[34m--- Installation des plugins de neovim ---\033[0m"
     #nvim .config/nvim/lua/adrien-config/packer.lua
+    END)
 
-    EOF
+    su - adrien -c "$user_commands"
 
     echo -e "\033[34m--- Démontage du disque backup ---\033[0m"
     umount /mnt
