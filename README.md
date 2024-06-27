@@ -41,17 +41,18 @@ cd mymount/my_arch_install
 cfdisk
 ```
 
+## Lancement du script
+```
+./script_install [partition boot] [partition root]
+#exemple
+./script_install sda1 sda2
+```
+
 ## Fin d'installation
 ```
 cd
 umount mymount
 poweroff
-```
-
-## Lancement du script
-```
-./script_install [partition boot] [partition root]
-./script_install sda1 sda2
 ```
 
 # Post-installation

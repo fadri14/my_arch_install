@@ -44,6 +44,7 @@ git
 gammastep
 yt-dlp
 id3v2
+keepassxc
 
 pacman-contrib
 ruby
