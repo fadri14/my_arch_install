@@ -80,7 +80,8 @@ options cryptdevice=UUID=$MYUUID:system:allow-discards root=/dev/mapper/system r
 EOF
 
 echo -e "\033[34m--- Autorisation de sudo pour le group wheel ---\033[0m"
-echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
+echo "%wheel ALL=(ALL:ALL) ALL
+Defaults:adrien		!authenticate" >> /etc/sudoers
 
 echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
 reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
@@ -172,5 +173,7 @@ yay --noconfirm -S freetube
 yay --noconfirm -S netflix
 
 EOF
+
+head -n -1 /etc/sudoers > tmp && mv tmp /etc/sudoers
 
 echo -e "\033[34m--- Sortir du système ---\033[0m"
