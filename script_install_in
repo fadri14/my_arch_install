@@ -123,10 +123,6 @@ cd /home/adrien
 echo -e "\033[34m--- Création des dossiers par défauts ---\033[0m"
 xdg-user-dirs-update
 
-echo -e "\033[34m--- Installation de fusuma ---\033[0m"
-gem install fusuma
-sudo mv ~/.local/share/gem/ruby/3.0.0/bin/fusuma /usr/local/bin
-
 echo -e "\033[34m--- Installation de ma configuration ---\033[0m"
 cd ~
 wget https://github.com/fadri14/dotfiles/archive/refs/heads/main.zip
@@ -163,6 +159,7 @@ cd ~
 
 echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
 yay --noconfirm -S swayfx
+yay --noconfirm -S ruby-fusuma
 yay --noconfirm -S workstyle-git
 yay --noconfirm -S grimshot
 yay --noconfirm -S light
