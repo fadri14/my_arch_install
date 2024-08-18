@@ -47,7 +47,6 @@ id3v2
 keepassxc
 
 pacman-contrib
-ruby
 python-pip
 python-certifi
 texlive-langfrench
