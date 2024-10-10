@@ -80,3 +80,34 @@ umount /mnt
 cryptsetup close system
 poweroff
 ```
+
+# Chroot
+
+## Déchiffrement du système
+```
+cryptsetup open /dev/$partition_systeme system
+```
+## Monter les sous-volumes btrfs
+```
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/mapper/system /mnt
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/mapper/system /mnt/home
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/mapper/system /mnt/.snapshots
+```
+## Monter le boot
+```
+mount /dev/$partition_boot /mnt/boot
+```
+## Chroot
+```
+arch-chroot /mnt
+```
+## Démonter tout
+```
+umount -R /mnt
+```
+## Fermer le chiffrement du système
+```
+cryptsetup close system
+```
+
+
