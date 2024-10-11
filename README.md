@@ -1,10 +1,15 @@
 # Mon script d'installation d'arch linux
 
 ## But : Script d'installation avec:
-### Btrfs
-### Luks
-### Systemd-boot
-### Swayfx
+### Bureau :
+#### Btrfs
+#### Luks
+#### Systemd-boot
+#### Swayfx
+### Serveur :
+#### Btrfs
+#### Systemd-boot
+#### Docker
 
 # Procédure
 
@@ -28,10 +33,11 @@ passwd
 ssh root@[ip]
 ```
 
-## Monter le stockage de ventoy pour accéder au script
+## Monter le stockage de ventoy pour accéder au script (desktop ou serveur)
 ```
 mount -m /dev/sdb4 mymount
-cd mymount/my_arch_install
+cd mymount/my_arch_install/desktop
+#cd mymount/my_arch_install/server
 ```
 
 ## Créer une partition boot et une autre qui sera le système principale
