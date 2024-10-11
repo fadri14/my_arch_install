@@ -100,6 +100,18 @@ echo -e "\033[34m--- Configuration du bouton power ---\033[0m"
 sed -i "s/#HandlePowerKey=poweroff/HandlePowerKey=ignore/" /etc/systemd/logind.conf
 sed -i "s/#HandlePowerKeyLongPress=ignore/HandlePowerKeyLongPress=poweroff/" /etc/systemd/logind.conf
 
+echo -en "\033[34m\t----- Mise en place de la sécurité pour root -----\033[0m\n\n"
+# Empêcher le shell root de fonctionner
+sed -i '1 s/root:x:0:0::\/root:\/usr\/bin\/bash\/root:x:0:0::\/root:\/usr\/bin\/nologin/' /etc/passwd
+# Désactiver la connexion root via le périphérique de console (TTY)
+sudo mv /etc/securetty /etc/securetty.orig
+sudo touch /etc/securetty
+sudo chmod 600 /etc/securetty
+# Désactiver la connexion root en ssh
+echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+systemctl reload sshd
+
+
 echo -en "\033[34m\t----- Partie utilisateur -----\033[0m\n\n"
 su - lebotdufutur << EOF
 cd /home/lebotdufutur
