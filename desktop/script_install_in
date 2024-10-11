@@ -1,0 +1,177 @@
+#!/bin/bash
+
+partition_systeme="$1"
+type_ucode="$2"
+
+echo -e "\033[34m--- Activation du compte root ---\033[0m"
+passwd
+
+echo -e "\033[34m--- Changer les paramètres de pacman ---\033[0m"
+sed -i 's/#Color$/Color/' /etc/pacman.conf
+sed -i 's/#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
+sed -i 's/#ParallelDownloads = .$/ParallelDownloads = 4/' /etc/pacman.conf
+
+echo -e "\033[34m--- Changer le flag de compilation ---\033[0m"
+cat << EOF >> /etc/makepkg.conf
+MAKEFLAGS="-j$(nproc)"
+EOF
+
+echo -e "\033[34m--- Installer les paquets de bases ---\033[0m"
+pacman --noconfirm -S linux-zen linux-zen-headers linux-firmware util-linux networkmanager network-manager-applet wireless_tools wpa_supplicant dhcpcd base-devel btrfs-progs polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget curl rsync openssh sudo dialog ntp dosfstools ntfs-3g $type_ucode
+
+echo -e "\033[34m--- Définir le fuseau horaire ---\033[0m"
+ln -sf /usr/share/zoneinfo/Europe/Brussels /etc/localtime
+
+echo -e "\033[34m--- Régler l'horloge matérielle ---\033[0m"
+hwclock --systohc
+
+echo -e "\033[34m--- Changer les locales ---\033[0m"
+sed -i 's/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
+
+echo -e "\033[34m--- Générer les locales ---\033[0m"
+locale-gen
+
+echo -e "\033[34m--- Configurer les locales ---\033[0m"
+cat << EOF > /etc/locale.conf
+LANG=fr_FR.UTF-8
+LC_MESSAGES=fr_FR.UTF-8
+EOF
+
+echo -e "\033[34m--- Configurer la console ---\033[0m"
+cat << EOF > /etc/vconsole.conf
+KEYMAP=fr-bepo
+FONT=ter-132b
+EOF
+
+echo -e "\033[34m--- Éditer le nom d'hôte ---\033[0m"
+cat << EOF > /etc/hostname
+archlinux_sway
+EOF
+
+echo -e "\033[34m--- Configuration du mkinitcpio ---\033[0m"
+cat << EOF > /etc/mkinitcpio.conf
+BINARIES=(btrfsck)
+HOOKS=(base udev autodetect microcode keyboard keymap modconf block encrypt filesystems fsck)
+EOF
+
+echo -e "\033[34m--- Recharger la configuration du mkinitcpio ---\033[0m"
+mkinitcpio -p linux-zen
+
+echo -e "\033[34m--- Installation de systemd-boot ---\033[0m"
+bootctl --esp-path=/boot install
+
+echo -e "\033[34m--- Configuration de systemd-boot ---\033[0m"
+cat << EOF > /boot/loader/loader.conf
+default arch.conf
+editor no
+timeout 0
+console-mode max
+EOF
+
+echo -e "\033[34m--- Configuration de l'entrée d'arch ---\033[0m"
+#MYUUID=$(blkid | grep $partition_systeme | cut -d '"' -f2)
+MYUUID=$(ls -l /dev/disk/by-uuid/ | grep $partition_systeme | cut -d ' ' -f9)
+cat << EOF > /boot/loader/entries/arch.conf
+title My Arch Linux !
+linux /vmlinuz-linux-zen
+initrd intel-ucode.img
+initrd /initramfs-linux-zen.img
+options cryptdevice=UUID=$MYUUID:system:allow-discards root=/dev/mapper/system rootflags=subvol=root rw
+EOF
+
+echo -e "\033[34m--- Autorisation de sudo pour le group wheel ---\033[0m"
+echo "%wheel ALL=(ALL:ALL) ALL
+Defaults:adrien		!authenticate" >> /etc/sudoers
+
+echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
+reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
+
+echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
+useradd -m -c "I use Arch btw" adrien
+usermod -a -g adrien -G users,wheel,storage,power,network,audio,video,input adrien
+passwd adrien
+
+echo -e "\033[34m--- Installation d'autres paquets ---\033[0m"
+./install_package
+
+echo -e "\033[34m--- Configuration de sddm pour l'autologin ---\033[0m"
+mkdir /etc/sddm.conf.d
+cat << EOF > /etc/sddm.conf.d/autologin.conf
+[Autologin]
+User=adrien
+Session=sway
+EOF
+
+echo -e "\033[34m--- Démarrage des services ---\033[0m"
+systemctl enable systemd-timesyncd
+systemctl enable NetworkManager
+systemctl enable ntpd
+systemctl enable sddm
+systemctl enable bluetooth.service
+systemctl enable paccache.timer
+systemctl enable avahi-daemon cups.socket
+systemctl enable systemd-boot-update.service
+
+echo -e "\033[34m--- Configuration du bouton power ---\033[0m"
+sed -i "s/#HandlePowerKey=poweroff/HandlePowerKey=ignore/" /etc/systemd/logind.conf
+sed -i "s/#HandlePowerKeyLongPress=ignore/HandlePowerKeyLongPress=poweroff/" /etc/systemd/logind.conf
+
+echo -en "\033[34m\t----- Partie utilisateur -----\033[0m\n\n"
+su - adrien << EOF
+cd /home/adrien
+
+echo -e "\033[34m--- Création des dossiers par défauts ---\033[0m"
+xdg-user-dirs-update
+
+echo -e "\033[34m--- Installation de ma configuration ---\033[0m"
+cd ~
+wget https://github.com/fadri14/dotfiles/archive/refs/heads/main.zip
+unzip main.zip
+mv -f dotfiles-main/myconfig/* ~/.config
+rm -fr main.zip dotfiles-main
+
+echo -e "\033[34m--- Configuration de git ---\033[0m"
+cat << eof > ~/.gitconfig
+[user]
+	email = fadri1@proton.me
+	name = fadri14
+[core]
+	editor = nvim
+[merge]
+	tool = nvim
+	conflictstyle = diff3
+[mergetool]
+	prompt = false
+[push]
+	autoSetupRemote = true
+[init]
+	defaultBranch = main
+eof
+
+echo -e "\033[34m--- Installation de yay ---\033[0m"
+cd Téléchargements
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si --noconfirm
+cd ..
+rm -fr yay
+cd ~
+
+echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
+yay --noconfirm -S swayfx
+yay --noconfirm -S ruby-fusuma
+yay --noconfirm -S workstyle-git
+yay --noconfirm -S grimshot
+yay --noconfirm -S light
+yay --noconfirm -S arch-update
+yay --noconfirm -S librewolf-bin
+yay --noconfirm -S signal-desktop
+yay --noconfirm -S freetube-bin
+yay --noconfirm -S netflix
+
+EOF
+
+# Retire le droit de l'utilisateur à utiliser sudo sans authentification
+head -n -1 /etc/sudoers > tmp && mv tmp /etc/sudoers
+
+echo -e "\033[34m--- Sortir du système ---\033[0m"

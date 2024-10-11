@@ -1,0 +1,52 @@
+#!/bin/bash
+
+partition_boot="$1"
+partition_systeme="$2"
+
+type_ucode="intel-ucode"
+if [[ "$3" = "amd" ]]
+then
+    type_ucode="amd-ucode"
+fi
+
+echo -en "\033[34m\t----- Partie serveur -----\033[0m\n\n"
+
+echo -e "\033[34m--- Créer les fichiers systèmes ---\033[0m"
+mkfs.fat -F 32 /dev/$partition_boot
+mkfs.btrfs /dev/$partition_systeme
+
+echo -e "\033[34m--- Monter la partition ---\033[0m"
+mount -t btrfs /dev/$partition_systeme /mnt
+
+echo -e "\033[34m--- Créer les sous-volumes ---\033[0m"
+btrfs subvolume create /mnt/root
+btrfs subvolume create /mnt/home
+btrfs subvolume create /mnt/snapshots
+
+echo -e "\033[34m--- Démonter la partition ---\033[0m"
+umount -R /mnt
+
+echo -e "\033[34m--- Rémonter la partition avec les bonnes options ---\033[0m"
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/$partition_systeme /mnt
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/$partition_systeme /mnt/home
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/$partition_systeme /mnt/.snapshots
+
+echo -e "\033[34m--- Monter la partition boot ---\033[0m"
+mount /dev/$partition_boot --mkdir /mnt/boot
+
+echo -e "\033[34m--- Installer les paquets de bases ---\033[0m"
+pacstrap -K /mnt base
+
+echo -e "\033[34m--- Générer le fichier fstab ---\033[0m"
+genfstab -U -p /mnt >> /mnt/etc/fstab
+
+echo -e "\033[34m--- Rentrer dans le système ---\033[0m"
+cp script_install_in /mnt
+arch-chroot /mnt ./script_install_in $partition_systeme $type_ucode
+rm /mnt/script_install_in
+
+echo -en "\n\033[34m\t----- Fin de l'installlation -----\033[0m\n\n"
+
+echo -e "\033[34m--- Démonter le système ---\033[0m"
+umount -R /mnt
+
