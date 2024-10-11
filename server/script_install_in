@@ -85,7 +85,7 @@ echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
 reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
 
 echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
-useradd -m -c "I use Arch btw" lebotdufutur
+useradd -m -s /usr/bin/fish -c "I use Arch btw" lebotdufutur
 usermod -a -g lebotdufutur -G users,wheel,storage,power,network, lebotdufutur
 passwd lebotdufutur
 
