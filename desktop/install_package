@@ -45,6 +45,7 @@ gammastep
 yt-dlp
 id3v2
 keepassxc
+pkgstats
 
 pacman-contrib
 python-pip
