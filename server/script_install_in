@@ -101,9 +101,13 @@ echo -e "\033[34m--- Configuration du démon docker ---\033[0m"
 echo '{
     "storage-driver": "btrfs",
     "userland-proxy" : false,
-    "iptables": true
+    "iptables": true,
+    "userns-remap": "dockremap"
 }
 ' /etc/docker/daemon.json
+# Pour que docker vérifie la signature des images
+echo "
+export DOCKER_CONTENT_TRUST=1" >> /etc/profile
 
 echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
 useradd -m -s /usr/bin/fish -c "I use Arch btw" lebotdufutur

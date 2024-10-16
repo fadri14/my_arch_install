@@ -165,7 +165,6 @@ yay --noconfirm -S grimshot
 yay --noconfirm -S light
 yay --noconfirm -S arch-update
 yay --noconfirm -S librewolf-bin
-yay --noconfirm -S signal-desktop
 yay --noconfirm -S freetube-bin
 yay --noconfirm -S netflix
 

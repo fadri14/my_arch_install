@@ -92,6 +92,8 @@ snapper -c home create --type single --cleanup-algorithm number --description 'b
 
 echo -e "\033[34m--- Installation du mode docker rootless ---\033[0m"
 su - lebotdufutur -c "yay --noconfirm -S docker-rootless-extras"
+su - lebotdufutur -c "yay --noconfirm -S ufw-docker"
+su - lebotdufutur -c "ufw-docker install"
 
 echo -e "\033[34m--- Fin de la post-installation ---\033[0m"
 
