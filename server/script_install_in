@@ -102,7 +102,9 @@ echo '{
     "storage-driver": "btrfs",
     "userland-proxy" : false,
     "iptables": true,
-    "userns-remap": "dockremap"
+    "userns-remap": "dockremap",
+    "icc": false,
+    "no-new-privileges": true
 }
 ' /etc/docker/daemon.json
 # Pour que docker vérifie la signature des images
