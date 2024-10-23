@@ -160,10 +160,14 @@ cd ..
 rm -fr yay
 cd ~
 
-#echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
+echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
 yay --noconfirm -S arch-update
 
 EOF
+
+echo -e "\033[34m--- Installation du script changeTheme ---\033[0m"
+chmod lebotdufutur:lebotdufutur changeTheme
+mv changeTheme /usr/local/bin
 
 # Retire le droit de l'utilisateur à utiliser sudo sans authentification
 head -n -1 /etc/sudoers > tmp && mv tmp /etc/sudoers

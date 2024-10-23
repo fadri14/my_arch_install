@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [[ "$(cat ~/.state_theme)" = "white" ]]
+then
+    sed -i '51 s/^/-- /' "$HOME/.config/nvim/after/plugin/catppuccin.lua"
+    sed -i '46 s/^-- //' "$HOME/.config/nvim/after/plugin/onedark.lua"
+
+    echo 'source ~/.config/fish/themes/mytheme_dark.fish' > $HOME/.config/fish/conf.d/theme.fish
+
+    echo "dark" > ~/.state_theme
+
+elif [[ "$(cat ~/.state_theme)" = "dark"  ]]
+then
+    sed -i '51 s/^-- //' "$HOME/.config/nvim/after/plugin/catppuccin.lua"
+    sed -i '46 s/^/-- /' "$HOME/.config/nvim/after/plugin/onedark.lua"
+
+    echo 'source ~/.config/fish/themes/mytheme_white.fish' > $HOME/.config/fish/conf.d/theme.fish
+
+    echo "white" > ~/.state_theme
+fi
+

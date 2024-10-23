@@ -42,6 +42,7 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 
 echo -e "\033[34m--- Rentrer dans le système ---\033[0m"
 cp script_install_in /mnt
+cp changeTheme /mnt
 arch-chroot /mnt ./script_install_in $partition_systeme $type_ucode
 rm /mnt/script_install_in
 
