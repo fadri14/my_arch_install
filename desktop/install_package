@@ -47,6 +47,7 @@ yt-dlp
 id3v2
 keepassxc
 pkgstats
+zoxide
 
 pacman-contrib
 python-pip
