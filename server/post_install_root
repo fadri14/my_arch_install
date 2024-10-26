@@ -1,12 +1,4 @@
-#!/bin/bash
-
-if [[ $(whoami) != "root" ]]
-then
-    echo "Il faut être root"
-    exit 1
-fi
-
-echo -en "\033[34m\t----- Post installation -----\033[0m\n\n"
+#! /bin/bash
 
 echo -e "\033[34m--- Activation de scrub ---\033[0m"
 # C'est la checksum du système btrfs
@@ -95,10 +87,4 @@ nmcli connection modify $(nmcli -t -f NAME connection show --active | head -n 1)
                                                                                  ipv4.address 192.168.1.63/24 \
                                                                                  ipv4.gateway 192.168.1.1 \
                                                                                  ipv4.dns 192.168.1.1
-
-echo -e "\033[34m--- Installation du mode docker rootless ---\033[0m"
-su - lebotdufutur -c "yay --noconfirm -S docker-rootless-extras"
-su - lebotdufutur -c "yay --noconfirm -S ufw-docker && ufw-docker install"
-
-echo -e "\033[34m--- Fin de la post-installation ---\033[0m"
 

@@ -95,7 +95,7 @@ echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
 reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
 
 echo -e "\033[34m--- Installer les paquets pour le serveur ---\033[0m"
-pacman --noconfirm -S neovim glances ripgrep fastfetch fish starship git pacman-contrib python-pynvim bash bash-completion tar tmux docker docker-compose pkgstats zoxide
+pacman --noconfirm -S neovim glances ripgrep fastfetch fish starship git pacman-contrib python-pynvim bash-completion tmux docker docker-compose pkgstats zoxide
 
 echo -e "\033[34m--- Configuration du démon docker ---\033[0m"
 mkdir /etc/docker
@@ -129,41 +129,6 @@ systemctl enable docker
 echo -e "\033[34m--- Configuration du bouton power ---\033[0m"
 sed -i "s/#HandlePowerKey=poweroff/HandlePowerKey=ignore/" /etc/systemd/logind.conf
 sed -i "s/#HandlePowerKeyLongPress=ignore/HandlePowerKeyLongPress=poweroff/" /etc/systemd/logind.conf
-
-echo -en "\033[34m\t----- Partie utilisateur -----\033[0m\n\n"
-su - lebotdufutur << EOF
-cd /home/lebotdufutur
-
-echo -e "\033[34m--- Installation de ma configuration ---\033[0m"
-cd ~
-wget https://github.com/fadri14/dotfiles/archive/refs/heads/main.zip
-unzip main.zip
-
-declare -a folders=(
-    "fish"
-    "nvim"
-    "starship.toml"
-)
-
-for folder in $folders
-    mv -f dotfiles-main/myconfig/${folder} ~/.config
-end
-
-rm -fr main.zip dotfiles-main
-
-echo -e "\033[34m--- Installation de yay ---\033[0m"
-cd Téléchargements
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si --noconfirm
-cd ..
-rm -fr yay
-cd ~
-
-echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
-yay --noconfirm -S arch-update
-
-EOF
 
 echo -e "\033[34m--- Installation du script changeTheme ---\033[0m"
 chown lebotdufutur:lebotdufutur changeTheme

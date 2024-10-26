@@ -1,0 +1,48 @@
+#!/bin/bash
+
+if [[ $(whoami) = "root" ]]
+then
+    echo "Il ne faut pas être root"
+    exit 1
+fi
+
+echo -en "\033[34m\t----- Post installation -----\033[0m\n\n"
+
+echo -en "\033[34m\t----- Partie administrateur -----\033[0m\n\n"
+
+sudo ./post_install_root
+
+echo -en "\033[34m\t----- Partie utilisateur -----\033[0m\n\n"
+
+echo -e "\033[34m--- Installation de ma configuration ---\033[0m"
+cd ~
+wget https://github.com/fadri14/dotfiles/archive/refs/heads/main.zip
+unzip main.zip
+
+folders="\
+fish
+nvim
+starship.toml"
+
+for folder in $folders
+do
+    echo "mv -f dotfiles-main/myconfig/${folder} ~/.config"
+done
+
+rm -fr main.zip dotfiles-main
+
+echo -e "\033[34m--- Installation de yay ---\033[0m"
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si --noconfirm
+cd ..
+rm -fr yay
+
+echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
+yay --noconfirm -S arch-update
+yay --noconfirm -S docker-rootless-extras
+yay --noconfirm -S ufw-docker
+ufw-docker install
+
+echo -e "\033[34m--- Fin de la post-installation ---\033[0m"
+
