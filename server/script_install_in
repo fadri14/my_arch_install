@@ -125,6 +125,12 @@ systemctl enable systemd-boot-update.service
 systemctl enable sshd
 systemctl enable docker
 
+echo -e "\033[34m--- Configuration l'adresse ip fixe ---\033[0m"
+nmcli connection modify $(nmcli -tf NAME connection show --active | head -n 1) ipv4.method manual \
+                                                                               ipv4.address 192.168.1.63/24 \
+                                                                               ipv4.gateway 192.168.1.1 \
+                                                                               ipv4.dns 192.168.1.1
+
 echo -e "\033[34m--- Configuration du bouton power ---\033[0m"
 sed -i "s/#HandlePowerKey=poweroff/HandlePowerKey=ignore/" /etc/systemd/logind.conf
 sed -i "s/#HandlePowerKeyLongPress=ignore/HandlePowerKeyLongPress=poweroff/" /etc/systemd/logind.conf
