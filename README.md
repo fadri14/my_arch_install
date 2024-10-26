@@ -68,9 +68,15 @@ poweroff
 
 # Post-installation
 Brancher le disque de backup
+## Pour l'installation bureau
 ```
 sudo ./post_install
 ```
+## Pour l'installation serveur
+```
+./post_install_user
+```
+
 # Pour rollback
 ```
 #cryptsetup open /dev/[partition root] system
