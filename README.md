@@ -34,11 +34,16 @@ passwd
 ssh root@[ip]
 ```
 
-## Monter le stockage de ventoy pour accéder au script (desktop ou serveur)
+## Monter le stockage de ventoy pour accéder aux scripts
 ```
 mount -m /dev/sdb4 mymount
+```
+### Choisir l'installation du bureau ou du serveur
+```
 cd mymount/my_arch_install/desktop
-#cd mymount/my_arch_install/server
+```
+```
+cd mymount/my_arch_install/server
 ```
 
 ## Créer une partition boot et une autre qui sera le système principale
@@ -49,9 +54,8 @@ cfdisk
 ```
 
 ## Lancement du script
+syntaxe : `./script_install [partition boot] [partition root]`
 ```
-#./script_install [partition boot] [partition root]
-#exemple
 ./script_install sda1 sda2
 ```
 
