@@ -89,7 +89,7 @@ reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
 echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
 useradd -m -c "I use Arch btw" adrien
 usermod -a -g adrien -G users,wheel,storage,power,network,audio,video,input adrien
-passwd adrien
+echo "adrien:a" | chpasswd
 
 echo -e "\033[34m--- Installation d'autres paquets ---\033[0m"
 ./install_package

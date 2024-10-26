@@ -90,6 +90,12 @@ echo -e "\033[34m--- Création des premiers instantanés ---\033[0m"
 snapper -c root create --type single --cleanup-algorithm number --description 'backup_root'
 snapper -c home create --type single --cleanup-algorithm number --description 'backup_home'
 
+echo -e "\033[34m--- Configuration de l'adresse ip fixe ---\033[0m"
+nmcli connection modify $(nmcli -t -f NAME connection show --active | head -n 1) ipv4.method manual \
+                                                                                 ipv4.address 192.168.1.63/24 \
+                                                                                 ipv4.gateway 192.168.1.1 \
+                                                                                 ipv4.dns 192.168.1.1
+
 echo -e "\033[34m--- Installation du mode docker rootless ---\033[0m"
 su - lebotdufutur -c "yay --noconfirm -S docker-rootless-extras"
 su - lebotdufutur -c "yay --noconfirm -S ufw-docker && ufw-docker install"

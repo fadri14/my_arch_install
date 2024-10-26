@@ -4,7 +4,7 @@ partition_systeme="$1"
 type_ucode="$2"
 
 echo -e "\033[34m--- Activation du compte root ---\033[0m"
-passwd
+echo "root:r" | chpasswd
 
 echo -e "\033[34m--- Changer les paramètres de pacman ---\033[0m"
 sed -i 's/#Color$/Color/' /etc/pacman.conf
@@ -77,9 +77,9 @@ initrd intel-ucode.img
 initrd /initramfs-linux.img
 EOF
 
-echo -en "\033[34m\t----- Mise en place de la sécurité pour root -----\033[0m\n\n"
+echo -en "\033[34m--- Mise en place de la sécurité pour root ---\033[0m\n\n"
 # Empêcher le shell root de fonctionner
-sed -i '1 s/root:x:0:0::\/root:\/usr\/bin\/bash\/root:x:0:0::\/root:\/usr\/bin\/nologin/' /etc/passwd
+sed -i '1 s/root:x:0:0::\/root:\/usr\/bin\/bash/root:x:0:0::\/root:\/usr\/bin\/nologin/' /etc/passwd
 # Désactiver la connexion root via le périphérique de console (TTY)
 sudo mv /etc/securetty /etc/securetty.orig
 sudo touch /etc/securetty
@@ -105,16 +105,16 @@ echo '{
     "userns-remap": "dockremap",
     "icc": false,
     "no-new-privileges": true
-}
-' /etc/docker/daemon.json
+}' > /etc/docker/daemon.json
+
 # Pour que docker vérifie la signature des images
 echo "
 export DOCKER_CONTENT_TRUST=1" >> /etc/profile
 
 echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
 useradd -m -s /usr/bin/fish -c "I use Arch btw" lebotdufutur
-usermod -a -g lebotdufutur -G users,wheel,storage,power,network, lebotdufutur
-passwd lebotdufutur
+usermod -a -g lebotdufutur -G users,wheel,storage,power,network lebotdufutur
+echo "lebotdufutur:l" | chpasswd
 
 echo -e "\033[34m--- Démarrage des services ---\033[0m"
 systemctl enable systemd-timesyncd
@@ -124,12 +124,6 @@ systemctl enable paccache.timer
 systemctl enable systemd-boot-update.service
 systemctl enable sshd
 systemctl enable docker
-
-echo -e "\033[34m--- Configuration l'adresse ip fixe ---\033[0m"
-nmcli connection modify $(nmcli -tf NAME connection show --active | head -n 1) ipv4.method manual \
-                                                                               ipv4.address 192.168.1.63/24 \
-                                                                               ipv4.gateway 192.168.1.1 \
-                                                                               ipv4.dns 192.168.1.1
 
 echo -e "\033[34m--- Configuration du bouton power ---\033[0m"
 sed -i "s/#HandlePowerKey=poweroff/HandlePowerKey=ignore/" /etc/systemd/logind.conf
@@ -150,10 +144,9 @@ declare -a folders=(
     "starship.toml"
 )
 
-for folder in "${folders[@]}"
-do
+for folder in $folders
     mv -f dotfiles-main/myconfig/${folder} ~/.config
-done
+end
 
 rm -fr main.zip dotfiles-main
 
@@ -172,10 +165,10 @@ yay --noconfirm -S arch-update
 EOF
 
 echo -e "\033[34m--- Installation du script changeTheme ---\033[0m"
-chmod lebotdufutur:lebotdufutur changeTheme
+chown lebotdufutur:lebotdufutur changeTheme
 mv changeTheme /usr/local/bin
 
 # Retire le droit de l'utilisateur à utiliser sudo sans authentification
-head -n -1 /etc/sudoers > tmp && mv tmp /etc/sudoers
+head -n -1 /etc/sudoers > tmp.txt && mv tmp.txt /etc/sudoers
 
 echo -e "\033[34m--- Sortir du système ---\033[0m"
