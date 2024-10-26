@@ -81,9 +81,9 @@ echo -en "\033[34m--- Mise en place de la sécurité pour root ---\033[0m\n\n"
 # Empêcher le shell root de fonctionner
 sed -i '1 s/root:x:0:0::\/root:\/usr\/bin\/bash/root:x:0:0::\/root:\/usr\/bin\/nologin/' /etc/passwd
 # Désactiver la connexion root via le périphérique de console (TTY)
-sudo mv /etc/securetty /etc/securetty.orig
-sudo touch /etc/securetty
-sudo chmod 600 /etc/securetty
+mv /etc/securetty /etc/securetty.orig
+touch /etc/securetty
+chmod 600 /etc/securetty
 # Désactiver la connexion root en ssh
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 
@@ -98,6 +98,7 @@ echo -e "\033[34m--- Installer les paquets pour le serveur ---\033[0m"
 pacman --noconfirm -S neovim glances ripgrep fastfetch fish starship git pacman-contrib python-pynvim bash bash-completion tar tmux docker docker-compose pkgstats zoxide
 
 echo -e "\033[34m--- Configuration du démon docker ---\033[0m"
+mkdir /etc/docker
 echo '{
     "storage-driver": "btrfs",
     "userland-proxy" : false,

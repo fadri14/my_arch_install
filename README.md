@@ -50,7 +50,7 @@ cfdisk
 
 ## Lancement du script
 ```
-./script_install [partition boot] [partition root]
+#./script_install [partition boot] [partition root]
 #exemple
 ./script_install sda1 sda2
 ```
