@@ -77,15 +77,15 @@ initrd intel-ucode.img
 initrd /initramfs-linux.img
 EOF
 
-echo -en "\033[34m--- Mise en place de la sécurité pour root ---\033[0m\n\n"
+#echo -en "\033[34m--- Mise en place de la sécurité pour root ---\033[0m\n\n"
 # Empêcher le shell root de fonctionner
-sed -i '1 s/root:x:0:0::\/root:\/usr\/bin\/bash/root:x:0:0::\/root:\/usr\/bin\/nologin/' /etc/passwd
-# Désactiver la connexion root via le périphérique de console (TTY)
-mv /etc/securetty /etc/securetty.orig
-touch /etc/securetty
-chmod 600 /etc/securetty
+#sed -i '1 s/root:x:0:0::\/root:\/usr\/bin\/bash/root:x:0:0::\/root:\/usr\/bin\/nologin/' /etc/passwd
+## Désactiver la connexion root via le périphérique de console (TTY)
+#mv /etc/securetty /etc/securetty.orig
+#touch /etc/securetty
+#chmod 600 /etc/securetty
 # Désactiver la connexion root en ssh
-echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+#echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 
 echo -e "\033[34m--- Autorisation de sudo pour le group wheel ---\033[0m"
 echo "%wheel ALL=(ALL:ALL) ALL
