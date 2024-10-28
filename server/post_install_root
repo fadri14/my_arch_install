@@ -84,7 +84,7 @@ snapper -c home create --type single --cleanup-algorithm number --description 'b
 
 echo -e "\033[34m--- Configuration de l'adresse ip fixe ---\033[0m"
 nmcli connection modify $(nmcli -t -f NAME connection show --active | head -n 1) ipv4.method manual \
-                                                                                 ipv4.address 192.168.1.63/24 \
-                                                                                 ipv4.gateway 192.168.1.1 \
-                                                                                 ipv4.dns 192.168.1.1
+                                                                                 ipv4.address 192.168.0.25/24 \
+                                                                                 ipv4.gateway 192.168.0.1 \
+                                                                                 ipv4.dns 192.168.0.1
 

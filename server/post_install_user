@@ -40,9 +40,9 @@ rm -fr yay
 
 echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
 yay --noconfirm -S arch-update
-yay --noconfirm -S docker-rootless-extras
-yay --noconfirm -S ufw-docker
-ufw-docker install
+#yay --noconfirm -S docker-rootless-extras
+#yay --noconfirm -S ufw-docker
+#ufw-docker install
 
 echo -e "\033[34m--- Fin de la post-installation ---\033[0m"
 

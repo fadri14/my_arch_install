@@ -17,7 +17,7 @@ MAKEFLAGS="-j$(nproc)"
 EOF
 
 echo -e "\033[34m--- Installer les paquets de bases ---\033[0m"
-pacman --noconfirm -S linux linux-headers linux-firmware util-linux networkmanager network-manager-applet wireless_tools wpa_supplicant dhcpcd base-devel btrfs-progs polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget curl rsync openssh sudo dialog ntp dosfstools ntfs-3g base-devel $type_ucode
+pacman --noconfirm -S linux linux-headers linux-firmware networkmanager network-manager-applet wireless_tools wpa_supplicant dhcpcd base-devel btrfs-progs polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget rsync openssh sudo dialog ntp dosfstools ntfs-3g base-devel $type_ucode
 
 echo -e "\033[34m--- Définir le fuseau horaire ---\033[0m"
 ln -sf /usr/share/zoneinfo/Europe/Brussels /etc/localtime
