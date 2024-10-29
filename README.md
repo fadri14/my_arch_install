@@ -100,31 +100,46 @@ poweroff
 
 # Chroot
 
-## Déchiffrement du système
+## Desktop
+### Déchiffrement du système
 ```
 cryptsetup open /dev/$partition_systeme system
 ```
-## Monter les sous-volumes btrfs
+### Monter les sous-volumes btrfs
 ```
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/mapper/system /mnt
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/mapper/system /mnt/home
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/mapper/system /mnt/.snapshots
 ```
-## Monter le boot
+### Monter le boot
 ```
 mount /dev/$partition_boot /mnt/boot
 ```
-## Chroot
+### Chroot
 ```
 arch-chroot /mnt
 ```
-## Démonter tout
+### Démonter tout
 ```
 umount -R /mnt
 ```
-## Fermer le chiffrement du système
+### Fermer le chiffrement du système
 ```
 cryptsetup close system
 ```
-
-
+## Server
+### Monter les sous-volumes btrfs et le boot
+```
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/sda2 /mnt
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/sda2 /mnt/home
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/sda2 /mnt/.snapshots
+mount /dev/sda1 --mkdir /mnt/boot
+```
+### Chroot
+```
+arch-chroot /mnt
+```
+### Démonter tout
+```
+umount -R /mnt
+```
