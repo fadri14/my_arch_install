@@ -75,6 +75,7 @@ title My Server Arch Linux !
 linux /vmlinuz-linux
 initrd intel-ucode.img
 initrd /initramfs-linux.img
+options root=UUID=$MYUUID rw
 EOF
 
 #echo -en "\033[34m--- Mise en place de la sécurité pour root ---\033[0m\n\n"

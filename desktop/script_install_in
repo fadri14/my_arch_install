@@ -69,7 +69,6 @@ console-mode max
 EOF
 
 echo -e "\033[34m--- Configuration de l'entrée d'arch ---\033[0m"
-#MYUUID=$(blkid | grep $partition_systeme | cut -d '"' -f2)
 MYUUID=$(ls -l /dev/disk/by-uuid/ | grep $partition_systeme | cut -d ' ' -f9)
 cat << EOF > /boot/loader/entries/arch.conf
 title My Arch Linux !
