@@ -47,6 +47,9 @@ echo -e "\033[34m--- Configuration de ufw pour docker ---\033[0m"
 sudo ufw-docker install
 sudo systemctl restart ufw
 
+echo -e "\033[34m--- Configuration de crontab pour duckdns ---\033[0m"
+(crontab -l; echo "*/5 * * * * /home/lebotdufutur/serveur/duckdns/duck.sh >/dev/null 2>&1") | crontab -
+
 echo -e "\033[34m--- Installation de la configuration de neovim ---\033[0m"
 nvim .config/nvim/lua/adrien-config/packer.lua
 
