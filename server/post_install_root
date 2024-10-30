@@ -83,8 +83,18 @@ snapper -c root create --type single --cleanup-algorithm number --description 'b
 snapper -c home create --type single --cleanup-algorithm number --description 'backup_home'
 
 echo -e "\033[34m--- Configuration de l'adresse ip fixe ---\033[0m"
-nmcli connection modify $(nmcli -t -f NAME connection show --active | head -n 1) ipv4.method manual \
+nmcli connection modify "$(nmcli -t -f NAME connection show --active | head -n 1)" ipv4.method manual \
                                                                                  ipv4.address 192.168.0.25/24 \
                                                                                  ipv4.gateway 192.168.0.1 \
                                                                                  ipv4.dns 192.168.0.1
+
+echo -en "\033[34m--- Mise en place de la sécurité pour root ---\033[0m\n\n"
+# Empêcher le shell root de fonctionner
+sed -i '1 s/root:x:0:0::\/root:\/usr\/bin\/bash/root:x:0:0::\/root:\/usr\/bin\/nologin/' /etc/passwd
+# Désactiver la connexion root via le périphérique de console (TTY)
+mv /etc/securetty /etc/securetty.orig
+touch /etc/securetty
+chmod 600 /etc/securetty
+# Désactiver la connexion root en ssh
+bash -c 'echo "PermitRootLogin no" >> /etc/ssh/sshd_config'
 

@@ -78,16 +78,6 @@ initrd /initramfs-linux.img
 options root=UUID=$MYUUID rootflags=subvol=root rw
 EOF
 
-#echo -en "\033[34m--- Mise en place de la sécurité pour root ---\033[0m\n\n"
-# Empêcher le shell root de fonctionner
-#sed -i '1 s/root:x:0:0::\/root:\/usr\/bin\/bash/root:x:0:0::\/root:\/usr\/bin\/nologin/' /etc/passwd
-## Désactiver la connexion root via le périphérique de console (TTY)
-#mv /etc/securetty /etc/securetty.orig
-#touch /etc/securetty
-#chmod 600 /etc/securetty
-# Désactiver la connexion root en ssh
-#echo "PermitRootLogin no" >> /etc/ssh/sshd_config
-
 echo -e "\033[34m--- Autorisation de sudo pour le group wheel ---\033[0m"
 echo "%wheel ALL=(ALL:ALL) ALL
 Defaults:lebotdufutur		!authenticate" >> /etc/sudoers
@@ -96,7 +86,7 @@ echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
 reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
 
 echo -e "\033[34m--- Installer les paquets pour le serveur ---\033[0m"
-pacman --noconfirm -S neovim glances ripgrep fastfetch fish starship git pacman-contrib python-pynvim bash-completion tmux docker docker-compose pkgstats zoxide
+pacman --noconfirm -S ufw neovim glances ripgrep fastfetch fish starship git pacman-contrib python-pynvim bash-completion tmux docker docker-compose pkgstats zoxide
 
 echo -e "\033[34m--- Configuration du démon docker ---\033[0m"
 mkdir /etc/docker
@@ -104,14 +94,10 @@ echo '{
     "storage-driver": "btrfs",
     "userland-proxy" : false,
     "iptables": true,
-    "userns-remap": "dockremap",
+    "userns-remap": "lebotdufutur",
     "icc": false,
     "no-new-privileges": true
 }' > /etc/docker/daemon.json
-
-# Pour que docker vérifie la signature des images
-echo "
-export DOCKER_CONTENT_TRUST=1" >> /etc/profile
 
 echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
 useradd -m -s /usr/bin/fish -c "I use Arch btw" lebotdufutur
@@ -134,6 +120,7 @@ sed -i "s/#HandlePowerKeyLongPress=ignore/HandlePowerKeyLongPress=poweroff/" /et
 echo -e "\033[34m--- Installation du script changeTheme ---\033[0m"
 chown lebotdufutur:lebotdufutur changeTheme
 mv changeTheme /usr/local/bin
+echo white > /home/lebotdufutur/.state_theme
 
 # Retire le droit de l'utilisateur à utiliser sudo sans authentification
 head -n -1 /etc/sudoers > tmp.txt && mv tmp.txt /etc/sudoers

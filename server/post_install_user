@@ -26,7 +26,8 @@ starship.toml"
 
 for folder in $folders
 do
-    echo "mv -f dotfiles-main/myconfig/${folder} ~/.config"
+    rm -fr ~/.config/${folder}
+    mv dotfiles-main/myconfig/${folder} ~/.config
 done
 
 rm -fr main.zip dotfiles-main
@@ -40,9 +41,15 @@ rm -fr yay
 
 echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
 yay --noconfirm -S arch-update
-#yay --noconfirm -S docker-rootless-extras
-#yay --noconfirm -S ufw-docker
-#ufw-docker install
+yay --noconfirm -S ufw-docker
+
+echo -e "\033[34m--- Configuration de ufw pour docker ---\033[0m"
+sudo ufw-docker install
+sudo systemctl restart ufw
+
+echo -e "\033[34m--- Installation de la configuration de neovim ---\033[0m"
+nvim .config/nvim/lua/adrien-config/packer.lua
 
 echo -e "\033[34m--- Fin de la post-installation ---\033[0m"
 
+echo "Il faut lancer la commande 'yay --noconfirm -S docker-rootless-extras' et faire ce qu'il dit"
