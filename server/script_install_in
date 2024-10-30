@@ -17,7 +17,7 @@ MAKEFLAGS="-j$(nproc)"
 EOF
 
 echo -e "\033[34m--- Installer les paquets de bases ---\033[0m"
-pacman --noconfirm -S linux linux-headers linux-firmware networkmanager network-manager-applet wireless_tools wpa_supplicant dhcpcd base-devel btrfs-progs polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget rsync openssh sudo dialog ntp dosfstools ntfs-3g base-devel $type_ucode
+pacman --noconfirm -S linux linux-headers linux-firmware networkmanager wireless_tools wpa_supplicant dhcpcd base-devel btrfs-progs polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget rsync openssh sudo dialog ntp dosfstools ntfs-3g base-devel $type_ucode
 
 echo -e "\033[34m--- Définir le fuseau horaire ---\033[0m"
 ln -sf /usr/share/zoneinfo/Europe/Brussels /etc/localtime
@@ -51,7 +51,7 @@ EOF
 echo -e "\033[34m--- Configuration du mkinitcpio ---\033[0m"
 cat << EOF > /etc/mkinitcpio.conf
 BINARIES=(btrfsck)
-HOOKS=(base autodetect microcode modconf block filesystems fsck)
+HOOKS=(base autodetect microcode modconf block keyboard filesystems fsck)
 EOF
 
 echo -e "\033[34m--- Recharger la configuration du mkinitcpio ---\033[0m"
@@ -75,7 +75,7 @@ title My Server Arch Linux !
 linux /vmlinuz-linux
 initrd intel-ucode.img
 initrd /initramfs-linux.img
-options root=UUID=$MYUUID rw
+options root=UUID=$MYUUID rootflags=subvol=root rw
 EOF
 
 #echo -en "\033[34m--- Mise en place de la sécurité pour root ---\033[0m\n\n"
