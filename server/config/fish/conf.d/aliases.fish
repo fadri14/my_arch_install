@@ -1,0 +1,6 @@
+alias nsh "nvim ~/.config/fish/config.fish"
+alias n "nvim"
+alias sh "history | grep"
+alias create_snap "sudo snapper -c root create --type single --cleanup-algorithm number --description 'backup_root' ; snapper -c home create --type single --cleanup-algorithm number --description 'backup_home'"
+alias ea "eza -1 --icons"
+alias eal "eza -lh --icons"

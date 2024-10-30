@@ -15,22 +15,11 @@ sudo ./post_install_root
 echo -en "\033[34m\t----- Partie utilisateur -----\033[0m\n\n"
 
 echo -e "\033[34m--- Installation de ma configuration ---\033[0m"
-cd ~
-wget https://github.com/fadri14/dotfiles/archive/refs/heads/main.zip
-unzip main.zip
-
-folders="\
-fish
-nvim
-starship.toml"
-
-for folder in $folders
+for folder in config/*
 do
     rm -fr ~/.config/${folder}
-    mv dotfiles-main/myconfig/${folder} ~/.config
+    mv config/${folder} ~/.config
 done
-
-rm -fr main.zip dotfiles-main
 
 echo -e "\033[34m--- Installation de yay ---\033[0m"
 git clone https://aur.archlinux.org/yay.git
