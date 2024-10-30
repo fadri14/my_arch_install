@@ -139,7 +139,8 @@ mount /dev/sda1 --mkdir /mnt/boot
 ```
 arch-chroot /mnt
 ```
-### Démonter tout
+### Démonter tout et éteindre
 ```
 umount -R /mnt
+poweroff
 ```
