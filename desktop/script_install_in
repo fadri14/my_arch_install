@@ -147,6 +147,22 @@ cat << eof > ~/.gitconfig
 	defaultBranch = main
 eof
 
+echo -e "\033[34m--- Configuration de discord ---\033[0m"
+echo '{
+  "chromiumSwitches": {},
+  "IS_MAXIMIZED": true,
+  "IS_MINIMIZED": false,
+  "MINIMIZE_TO_TRAY": false,
+  "OPEN_ON_STARTUP": false,
+  "WINDOW_BOUNDS": {
+    "x": 484,
+    "y": 177,
+    "width": 952,
+    "height": 766
+  },
+  "SKIP_HOST_UPDATE": true
+}' > ~/.config/discord/settings.json
+
 echo -e "\033[34m--- Installation de yay ---\033[0m"
 cd Téléchargements
 git clone https://aur.archlinux.org/yay.git
