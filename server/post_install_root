@@ -88,12 +88,6 @@ nmcli connection modify "$(nmcli -t -f NAME connection show --active | head -n 1
                                                                                  ipv4.gateway 192.168.0.1 \
                                                                                  ipv4.dns 192.168.0.1
 
-echo -en "\033[34m--- Création des dossiers pour crowdsec ---\033[0m\n\n"
-sudo touch /var/log/auth.log
-sudo chown lebotdufutur:lebotdufutur /var/log/auth.log
-sudo mkdir /data
-sudo chown lebotdufutur:lebotdufutur /data
-
 echo -en "\033[34m--- Mise en place de la sécurité pour root ---\033[0m\n\n"
 # Empêcher le shell root de fonctionner
 sed -i '1 s/root:x:0:0::\/root:\/usr\/bin\/bash/root:x:0:0::\/root:\/usr\/bin\/nologin/' /etc/passwd
