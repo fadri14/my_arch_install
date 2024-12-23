@@ -111,7 +111,7 @@ systemctl enable ntpd
 systemctl enable paccache.timer
 systemctl enable systemd-boot-update.service
 systemctl enable sshd
-systemctl enable docker
+systemctl enable docker.socket
 
 echo -e "\033[34m--- Configuration du bouton power ---\033[0m"
 sed -i "s/#HandlePowerKey=poweroff/HandlePowerKey=ignore/" /etc/systemd/logind.conf
