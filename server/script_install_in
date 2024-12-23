@@ -121,6 +121,7 @@ echo -e "\033[34m--- Installation du script changeTheme ---\033[0m"
 chown lebotdufutur:lebotdufutur changeTheme
 mv changeTheme /usr/local/bin
 echo white > /home/lebotdufutur/.state_theme
+chown lebotdufutur:lebotdufutur /home/lebotdufutur/.state_theme
 
 # Retire le droit de l'utilisateur à utiliser sudo sans authentification
 head -n -1 /etc/sudoers > tmp.txt && mv tmp.txt /etc/sudoers
