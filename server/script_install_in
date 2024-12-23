@@ -86,7 +86,7 @@ echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
 reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
 
 echo -e "\033[34m--- Installer les paquets pour le serveur ---\033[0m"
-pacman --noconfirm -S ufw neovim glances ripgrep fastfetch fish starship git pacman-contrib python-pynvim bash-completion tmux docker docker-compose pkgstats zoxide cronie
+pacman --noconfirm -S ufw neovim glances ripgrep fastfetch fish starship git pacman-contrib python-pynvim bash-completion tmux docker docker-compose pkgstats zoxide cronie eza
 
 echo -e "\033[34m--- Configuration du démon docker ---\033[0m"
 mkdir /etc/docker
