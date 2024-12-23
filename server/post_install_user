@@ -15,10 +15,11 @@ sudo ./post_install_root
 echo -en "\033[34m\t----- Partie utilisateur -----\033[0m\n\n"
 
 echo -e "\033[34m--- Installation de ma configuration ---\033[0m"
-for folder in config/*
+config="fish nvim starship.toml"
+for folder in config
 do
     rm -fr ~/.config/${folder}
-    mv config/${folder} ~/.config
+    cp -r config/${folder} ~/.config
 done
 
 echo -e "\033[34m--- Installation de yay ---\033[0m"
@@ -38,9 +39,6 @@ sudo systemctl restart ufw
 
 echo -e "\033[34m--- Configuration de crontab pour duckdns ---\033[0m"
 (crontab -l; echo "*/5 * * * * /home/lebotdufutur/serveur/duckdns/duck.sh >/dev/null 2>&1") | crontab -
-
-echo -e "\033[34m--- Installation de la configuration de neovim ---\033[0m"
-nvim .config/nvim/lua/adrien-config/packer.lua
 
 echo -e "\033[34m--- Fin de la post-installation ---\033[0m"
 
