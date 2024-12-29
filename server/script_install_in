@@ -120,6 +120,8 @@ sed -i "s/#HandlePowerKeyLongPress=ignore/HandlePowerKeyLongPress=poweroff/" /et
 echo -e "\033[34m--- Installation du script changeTheme ---\033[0m"
 chown lebotdufutur:lebotdufutur changeTheme
 mv changeTheme /usr/local/bin
+chown lebotdufutur:lebotdufutur dcc
+mv dcc /usr/local/bin
 echo white > /home/lebotdufutur/.state_theme
 chown lebotdufutur:lebotdufutur /home/lebotdufutur/.state_theme
 

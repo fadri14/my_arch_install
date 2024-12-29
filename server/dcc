@@ -1,0 +1,39 @@
+#!/bin/bash
+
+if [ "$1" = "clean" ]
+then
+    sudo docker image prune -a
+    exit 0
+fi
+
+#services="adguardhome home_assistant invidious netdata nextcloud_ls npm searxng vaultwarden wg-easy"
+services="npm searxng"
+
+for s in $services
+do
+    if [[ -d /home/lebotdufutur/serveur/"$s" ]]
+    then
+        cd /home/lebotdufutur/serveur/"$s"
+
+        if [ "$1" = "up" ]
+        then
+            sudo docker compose up -d
+        elif [ "$1" = "down" ]
+        then
+            sudo docker compose down
+        else
+            echo -e "\033[31mERREUR\033[0m commande non connu"
+            exit 1
+        fi
+
+        if [ $? = '0' ]
+        then
+            echo -e "\033[32mOK\033[0m $s"
+        else
+            echo -e "\033[31mERREUR\033[0m $s"
+        fi
+    else
+        echo -e "\033[34m$s n'existe pas\033[0m"
+    fi
+done
+
