@@ -176,7 +176,7 @@ echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
 yay --noconfirm -S swayfx
 yay --noconfirm -S ruby-fusuma
 yay --noconfirm -S workstyle-git
-yay --noconfirm -S grimshot
+yay --noconfirm -S grimshot-bin-sway
 yay --noconfirm -S light
 yay --noconfirm -S arch-update
 yay --noconfirm -S librewolf-bin

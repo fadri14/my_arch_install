@@ -100,6 +100,9 @@ cd ~
 echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
 echo "default-cache-ttl 3600
 pinentry-program /usr/bin/pinentry-qt5" > ~/.gnupg/gpg-agent.conf
+
+echo -e "\033[34m--- Installation de rust ---\033[0m"
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 END)
 
 su - adrien -c "$user_commands"
