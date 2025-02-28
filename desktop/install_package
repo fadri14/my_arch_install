@@ -48,7 +48,7 @@ id3v2
 keepassxc
 pkgstats
 zoxide
-spotube-bin
+rustup
 
 pacman-contrib
 python-pip
