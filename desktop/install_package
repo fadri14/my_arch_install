@@ -8,6 +8,7 @@ fi
 
 packages="
 neovim
+helix
 alacritty
 evince
 nautilus
