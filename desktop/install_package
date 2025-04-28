@@ -50,6 +50,7 @@ keepassxc
 pkgstats
 zoxide
 rustup
+nitroshare
 
 pacman-contrib
 python-pip
