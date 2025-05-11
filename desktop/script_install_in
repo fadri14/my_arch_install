@@ -184,6 +184,7 @@ yay --noconfirm -S freetube-bin
 yay --noconfirm -S netflix
 yay --noconfirm -S spotube-bin
 yay --noconfirm -S ttdl-bin
+yay --noconfirm -S localsend-bin
 EOF
 
 # Retire le droit de l'utilisateur à utiliser sudo sans authentification
