@@ -182,7 +182,7 @@ yay --noconfirm -S arch-update
 yay --noconfirm -S librewolf-bin
 yay --noconfirm -S freetube-bin
 yay --noconfirm -S netflix
-yay --noconfirm -S spotube-bin
+yay --noconfirm -S spotify
 yay --noconfirm -S ttdl-bin
 yay --noconfirm -S localsend-bin
 EOF
