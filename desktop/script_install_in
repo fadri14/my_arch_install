@@ -183,6 +183,7 @@ yay --noconfirm -S librewolf-bin
 yay --noconfirm -S freetube-bin
 yay --noconfirm -S netflix
 yay --noconfirm -S spotify
+yay --noconfirm -S spotify-adkiller-git
 yay --noconfirm -S ttdl-bin
 yay --noconfirm -S localsend-bin
 EOF
