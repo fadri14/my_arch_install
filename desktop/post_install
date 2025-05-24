@@ -103,6 +103,10 @@ echo "default-cache-ttl 3600
 pinentry-program /usr/bin/pinentry-qt5" > ~/.gnupg/gpg-agent.conf
 END)
 
+echo -e "\033[34m--- Création du swap pour l'hibernation ---\033[0m"
+btrfs subvolume create /swap
+btrfs filesystem mkswapfile --size 8g --uuid clear /swap/swapfile
+
 su - adrien -c "$user_commands"
 
 echo "Le backup sera monté dans /mnt"

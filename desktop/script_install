@@ -57,6 +57,9 @@ cat << EOF >> /mnt/etc/fstab
 
 # disque dur de backup
 UUID=e1ac2b27-f11a-4f83-b8b1-afa2dbb0eef1	/home/adrien/mymount	ext4	rw,user,noauto	0	0
+
+# swap pour l'hibernation
+/swap/swapfile none swap defaults 0 0
 EOF
 
 echo -e "\033[34m--- Rentrer dans le système ---\033[0m"
