@@ -33,17 +33,19 @@ echo -e "\033[34m--- Monter la partition ---\033[0m"
 mount -t btrfs /dev/mapper/system /mnt
 
 echo -e "\033[34m--- Créer les sous-volumes ---\033[0m"
-btrfs subvolume create /mnt/root
-btrfs subvolume create /mnt/home
-btrfs subvolume create /mnt/snapshots
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/@swap
 
 echo -e "\033[34m--- Démonter la partition ---\033[0m"
 umount -R /mnt
 
 echo -e "\033[34m--- Rémonter la partition avec les bonnes options ---\033[0m"
-mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/mapper/system /mnt
-mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/mapper/system /mnt/home
-mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/mapper/system /mnt/.snapshots
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@ /dev/mapper/system /mnt
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@home /dev/mapper/system /mnt/home
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@snapshots /dev/mapper/system /mnt/.snapshots
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@swap /dev/mapper/system /mnt/swap
 
 echo -e "\033[34m--- Monter la partition boot ---\033[0m"
 mount /dev/$partition_boot --mkdir /mnt/boot
@@ -55,11 +57,11 @@ echo -e "\033[34m--- Générer le fichier fstab ---\033[0m"
 genfstab -U -p /mnt >> /mnt/etc/fstab
 cat << EOF >> /mnt/etc/fstab
 
-# disque dur de backup
-UUID=e1ac2b27-f11a-4f83-b8b1-afa2dbb0eef1	/home/adrien/mymount	ext4	rw,user,noauto	0	0
-
 # swap pour l'hibernation
 /swap/swapfile none swap defaults 0 0
+
+# disque dur de backup
+UUID=e1ac2b27-f11a-4f83-b8b1-afa2dbb0eef1	/home/adrien/mymount	ext4	rw,user,noauto	0	0
 EOF
 
 echo -e "\033[34m--- Rentrer dans le système ---\033[0m"
