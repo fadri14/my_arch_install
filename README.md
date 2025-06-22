@@ -6,7 +6,7 @@
 #### Btrfs
 #### Luks
 #### Systemd-boot
-#### Swayfx
+#### Niri
 ### Serveur :
 #### Btrfs
 #### Systemd-boot
