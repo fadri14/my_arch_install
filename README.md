@@ -1,4 +1,4 @@
-# Mon script d'installation d'arch linux
+# Mon script d'installation d'arch linux 
 
 ## But : Script d'installation pour rapidement avoir une arch linux fonctionnelle:
 ## Mode
