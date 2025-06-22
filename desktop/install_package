@@ -41,6 +41,7 @@ keepassxc
 pkgstats
 zoxide
 rustup
+fish
 chezmoi
 
 openssh

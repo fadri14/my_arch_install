@@ -17,7 +17,7 @@ MAKEFLAGS="-j$(nproc)"
 EOF
 
 echo -e "\033[34m--- Installer les paquets de bases ---\033[0m"
-pacman --noconfirm -S linux-zen linux-zen-headers linux-firmware networkmanager network-manager-applet wireless_tools wpa_supplicant dhcpcd base-devel btrfs-progs polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget rsync openssh sudo dialog ntp dosfstools ntfs-3g bash bash-completion fish $type_ucode
+pacman --noconfirm -S linux-zen linux-zen-headers linux-firmware networkmanager network-manager-applet wireless_tools wpa_supplicant dhcpcd base-devel btrfs-progs polkit efibootmgr mkinitcpio vim zip unzip p7zip man-db man-pages reflector exfat-utils alsa-utils texinfo wget rsync openssh sudo dialog ntp dosfstools ntfs-3g bash bash-completion $type_ucode
 
 echo -e "\033[34m--- Définir le fuseau horaire ---\033[0m"
 ln -sf /usr/share/zoneinfo/Europe/Brussels /etc/localtime
@@ -86,7 +86,7 @@ echo -e "\033[34m--- Mise à jour des mirroirs ---\033[0m"
 reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
 
 echo -e "\033[34m--- Création de l'utilisateur ---\033[0m"
-useradd -m -p "a" -s /usr/bin/fish -c "I use Arch btw" -G users,wheel,storage,power,network,audio,video,input adrien
+useradd -m -c "I use Arch btw" -G users,wheel,storage,power,network,audio,video,input adrien
 
 echo -e "\033[34m--- Installation d'autres paquets ---\033[0m"
 ./install_package
@@ -117,7 +117,7 @@ chattr +C /swap
 btrfs filesystem mkswapfile --size 8G /swap/swapfile
 
 echo -en "\033[34m\t----- Partie utilisateur -----\033[0m\n\n"
-su -s /usr/bin/bash - adrien << EOF
+su - adrien << EOF
 cd /home/adrien
 
 echo -e "\033[34m--- Création des dossiers par défauts ---\033[0m"
