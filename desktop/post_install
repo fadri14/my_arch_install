@@ -17,7 +17,6 @@ ufw default deny
 ufw default allow outgoing
 ufw allow https
 ufw allow ssh
-ufw allow 631/tcp # imprimante
 ufw allow 53317 # localsend
 ufw limit ssh
 ufw enable
@@ -92,43 +91,16 @@ echo -e "\033[34m--- Création des premiers instantanés ---\033[0m"
 snapper -c root create --type single --cleanup-algorithm number --description 'backup_root'
 snapper -c home create --type single --cleanup-algorithm number --description 'backup_home'
 
-user_commands=$(cat << 'END'
 echo -e "\033[34m--- Installation de la zram ---\033[0m"
-cd ~/.config/myscripts
-sudo ./install_zram_state
-cd ~
+/home/adrien/.config/myscripts/install_zram_state
 
-echo -e "\033[34m--- Configuration de l'agent gpg ---\033[0m"
-echo "default-cache-ttl 3600
-pinentry-program /usr/bin/pinentry-qt5" > ~/.gnupg/gpg-agent.conf
-END)
-
-echo -e "\033[34m--- Création du swap pour l'hibernation ---\033[0m"
-btrfs subvolume create /swap
-btrfs filesystem mkswapfile --size 8g --uuid clear /swap/swapfile
-
-su - adrien -c "$user_commands"
-
-echo "Le backup sera monté dans /mnt"
-read -p "Voulez-vous faire une installation d'un backup [y|n] " res
+echo -e "\033[34m--- Restauration de backup ---\033[0m"
+read -p "Voulez-vous faire une restauration d'un backup à partir de /mnt [y|n] " res
 
 if [[ "$res" = "y" ]]
 then
-    echo -e "\033[34m--- Montage du disque backup ---\033[0m"
-    mount /dev/sdb1 /mnt
-
-    user_commands=$(cat << 'END'
-    echo -e "\033[34m--- Installation du backup ---\033[0m"
-    cd /mnt
-    PATH="$HOME/.config/myscripts/:$PATH"
-    backup i
-    cd ~
-    END)
-
-    su - adrien -c "$user_commands"
-
-    echo -e "\033[34m--- Démontage du disque backup ---\033[0m"
-    umount /mnt
+    su adrien -c "cp -r /mnt/* /home/adrien"
+    su adrien -c "cp -r /mnt/.ssh /home/adrien"
 fi
 
 echo "
@@ -138,4 +110,3 @@ gpg2 --list-secret-keys --keyid-format LONG # Afficher l'id de la clé
 pass init 'AAAA2222CCCC4444' # Initialiser pass avec l'id de la clé"
 
 echo -e "\033[34m--- Fin de la post-installation ---\033[0m"
-

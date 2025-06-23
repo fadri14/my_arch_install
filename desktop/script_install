@@ -56,7 +56,6 @@ pacstrap -K /mnt base
 echo -e "\033[34m--- Générer le fichier fstab ---\033[0m"
 genfstab -U -p /mnt >> /mnt/etc/fstab
 cat << EOF >> /mnt/etc/fstab
-
 # swap pour l'hibernation
 /swap/swapfile none swap defaults 0 0
 
