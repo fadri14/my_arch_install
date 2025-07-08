@@ -44,8 +44,11 @@ rustup
 fish
 chezmoi
 eza
+nextcloud-client
 
 openssh
+gnome-keyring
+seahorse
 xdg-desktop-portal-gtk
 xdg-desktop-portal-gnome
 xdg-utils
