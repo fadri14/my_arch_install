@@ -8,7 +8,7 @@ fi
 
 packages="
 niri
-alacritty
+foot
 fuzzel
 waybar
 mako
