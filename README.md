@@ -7,10 +7,6 @@
 #### Luks
 #### Systemd-boot
 #### Niri
-### Serveur :
-#### Btrfs
-#### Systemd-boot
-#### Docker
 
 # Procédure
 
@@ -38,12 +34,9 @@ ssh root@[ip]
 ```
 mount -m /dev/sdb4 mymount
 ```
-### Choisir l'installation du bureau ou du serveur
+### Se déplacer dans le dossier my_arch_install
 ```
-cd mymount/my_arch_install/desktop
-```
-```
-cd mymount/my_arch_install/server
+cd mymount/my_arch_install/
 ```
 
 ## Créer une partition boot et une autre qui sera le système principale
@@ -68,13 +61,8 @@ poweroff
 
 # Post-installation
 Brancher le disque de backup
-## Pour l'installation bureau
 ```
 sudo ./post_install
-```
-## Pour l'installation serveur
-```
-./post_install_user
 ```
 
 # Pour rollback
@@ -99,48 +87,29 @@ poweroff
 ```
 
 # Chroot
-
-## Desktop
-### Déchiffrement du système
+## Déchiffrement du système
 ```
 cryptsetup open /dev/$partition_systeme system
 ```
-### Monter les sous-volumes btrfs
+## Monter les sous-volumes btrfs
 ```
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/mapper/system /mnt
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/mapper/system /mnt/home
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/mapper/system /mnt/.snapshots
 ```
-### Monter le boot
+## Monter le boot
 ```
 mount /dev/$partition_boot /mnt/boot
 ```
-### Chroot
+## Chroot
 ```
 arch-chroot /mnt
 ```
-### Démonter tout
+## Démonter tout
 ```
 umount -R /mnt
 ```
-### Fermer le chiffrement du système
+## Fermer le chiffrement du système
 ```
 cryptsetup close system
-```
-## Server
-### Monter les sous-volumes btrfs et le boot
-```
-mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=root /dev/sda2 /mnt
-mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=home /dev/sda2 /mnt/home
-mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=snapshots /dev/sda2 /mnt/.snapshots
-mount /dev/sda1 --mkdir /mnt/boot
-```
-### Chroot
-```
-arch-chroot /mnt
-```
-### Démonter tout et éteindre
-```
-umount -R /mnt
-poweroff
 ```
