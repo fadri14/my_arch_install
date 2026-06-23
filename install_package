@@ -13,7 +13,6 @@ fuzzel
 waybar
 mako
 swww
-gtklock
 helix
 evince
 nautilus
@@ -44,6 +43,7 @@ rustup
 fish
 chezmoi
 eza
+brightnessctl
 nextcloud-client
 
 openssh

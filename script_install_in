@@ -146,7 +146,6 @@ rm -fr yay
 cd ~
 
 echo -e "\033[34m--- Installation des paquets du AUR ---\033[0m"
-yay --noconfirm -S light
 yay --noconfirm -S arch-update
 yay --noconfirm -S librewolf-bin
 yay --noconfirm -S freetube-bin
@@ -154,7 +153,8 @@ yay --noconfirm -S spotify
 yay --noconfirm -S spotify-adkiller-git
 yay --noconfirm -S ttdl-bin
 yay --noconfirm -S localsend-bin
-yay --noconfirm -S wlogout
+yay --noconfirm -S waylogout
+yay --noconfirm -S swaylock-effects
 EOF
 
 # Retire le droit de l'utilisateur à utiliser sudo sans authentification
