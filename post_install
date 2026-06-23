@@ -102,6 +102,10 @@ then
     su adrien -c "cp -r /mnt/* /home/adrien"
 fi
 
+echo -e "\033[34m--- Activation du nettoyage automatique de la corbeille ---\033[0m"
+su adrien -c "gsettings set org.gnome.desktop.privacy remove-old-temp-files true"
+su adrien -c "gsettings set org.gnome.desktop.privacy remove-old-trash-files true"
+
 echo "
 Il faut également créer une clé gpg et activer pass
 gpg2 --full-generate-key # Création de la clé
