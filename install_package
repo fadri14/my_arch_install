@@ -44,6 +44,7 @@ fish
 chezmoi
 eza
 brightnessctl
+meld
 nextcloud-client
 
 openssh
